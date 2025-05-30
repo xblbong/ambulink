@@ -1,0 +1,138 @@
+[
+  {
+    "name": "Aceh",
+    "cities": ["Banda Aceh", "Langsa", "Lhokseumawe", "Sabang", "Subulussalam"]
+  },
+  {
+    "name": "Sumatera Utara",
+    "cities": ["Medan", "Binjai", "Padang Sidempuan", "Pematangsiantar", "Sibolga", "Tanjungbalai", "Tebing Tinggi"]
+  },
+  {
+    "name": "Sumatera Barat",
+    "cities": ["Padang", "Bukittinggi", "Padangpanjang", "Payakumbuh", "Sawahlunto", "Solok"]
+  },
+  {
+    "name": "Riau",
+    "cities": ["Pekanbaru", "Dumai", "Bengkalis", "Siak", "Kampar"]
+  },
+  {
+    "name": "Kepulauan Riau",
+    "cities": ["Tanjung Pinang", "Batam", "Bintan", "Karimun"]
+  },
+  {
+    "name": "Jambi",
+    "cities": ["Jambi", "Sungai Penuh", "Muaro Jambi", "Kerinci"]
+  },
+  {
+    "name": "Sumatera Selatan",
+    "cities": ["Palembang", "Lubuklinggau", "Pagar Alam", "Prabumulih"]
+  },
+  {
+    "name": "Bangka Belitung",
+    "cities": ["Pangkal Pinang", "Belitung", "Bangka"]
+  },
+  {
+    "name": "Bengkulu",
+    "cities": ["Bengkulu", "Rejang Lebong", "Kepahiang"]
+  },
+  {
+    "name": "Lampung",
+    "cities": ["Bandar Lampung", "Metro", "Lampung Selatan", "Lampung Tengah"]
+  },
+  {
+    "name": "DKI Jakarta",
+    "cities": ["Jakarta Pusat", "Jakarta Utara", "Jakarta Barat", "Jakarta Selatan", "Jakarta Timur"]
+  },
+  {
+    "name": "Banten",
+    "cities": ["Serang", "Cilegon", "Tangerang", "Tangerang Selatan"]
+  },
+  {
+    "name": "Jawa Barat",
+    "cities": ["Bandung", "Bekasi", "Bogor", "Cimahi", "Cirebon", "Depok", "Sukabumi", "Tasikmalaya", "Banjar"]
+  },
+  {
+    "name": "Jawa Tengah",
+    "cities": ["Semarang", "Magelang", "Pekalongan", "Purwokerto", "Salatiga", "Surakarta", "Tegal"]
+  },
+  {
+    "name": "DI Yogyakarta",
+    "cities": ["Yogyakarta", "Bantul", "Sleman", "Kulon Progo", "Gunung Kidul"]
+  },
+  {
+    "name": "Jawa Timur",
+    "cities": ["Surabaya", "Batu", "Blitar", "Kediri", "Madiun", "Malang", "Mojokerto", "Pasuruan", "Probolinggo"]
+  },
+  {
+    "name": "Bali",
+    "cities": ["Denpasar", "Singaraja", "Negara", "Amlapura", "Gianyar", "Tabanan"]
+  },
+  {
+    "name": "Nusa Tenggara Barat",
+    "cities": ["Mataram", "Bima", "Dompu", "Sumbawa Besar"]
+  },
+  {
+    "name": "Nusa Tenggara Timur",
+    "cities": ["Kupang", "Ende", "Maumere", "Labuan Bajo"]
+  },
+  {
+    "name": "Kalimantan Barat",
+    "cities": ["Pontianak", "Singkawang", "Ketapang", "Sintang"]
+  },
+  {
+    "name": "Kalimantan Tengah",
+    "cities": ["Palangka Raya", "Sampit", "Pangkalan Bun"]
+  },
+  {
+    "name": "Kalimantan Selatan",
+    "cities": ["Banjarmasin", "Banjarbaru", "Martapura"]
+  },
+  {
+    "name": "Kalimantan Timur",
+    "cities": ["Samarinda", "Balikpapan", "Bontang", "Tenggarong"]
+  },
+  {
+    "name": "Kalimantan Utara",
+    "cities": ["Tanjung Selor", "Tarakan", "Malinau", "Nunukan"]
+  },
+  {
+    "name": "Sulawesi Utara",
+    "cities": ["Manado", "Bitung", "Tomohon", "Kotamobagu"]
+  },
+  {
+    "name": "Gorontalo",
+    "cities": ["Gorontalo", "Limboto", "Marisa"]
+  },
+  {
+    "name": "Sulawesi Tengah",
+    "cities": ["Palu", "Luwuk", "Toli-Toli", "Poso"]
+  },
+  {
+    "name": "Sulawesi Barat",
+    "cities": ["Mamuju", "Majene", "Polewali Mandar"]
+  },
+  {
+    "name": "Sulawesi Selatan",
+    "cities": ["Makassar", "Palopo", "Parepare", "Watampone"]
+  },
+  {
+    "name": "Sulawesi Tenggara",
+    "cities": ["Kendari", "Baubau", "Kolaka", "Raha"]
+  },
+  {
+    "name": "Maluku",
+    "cities": ["Ambon", "Tual", "Masohi", "Namlea"]
+  },
+  {
+    "name": "Maluku Utara",
+    "cities": ["Ternate", "Tidore", "Sofifi", "Jailolo"]
+  },
+  {
+    "name": "Papua",
+    "cities": ["Jayapura", "Merauke", "Timika", "Nabire"]
+  },
+  {
+    "name": "Papua Barat",
+    "cities": ["Manokwari", "Sorong", "Fakfak", "Kaimana"]
+  }
+] 

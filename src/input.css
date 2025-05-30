@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+.user-location-marker {
+    background-color: #3B82F6;
+    border: 2px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px #3B82F6;
+}
+
+.ping {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #3B82F6;
+    position: relative;
+}
+
+.ping::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #3B82F6;
+    opacity: 0.4;
+    animation: ping 1.5s ease-out infinite;
+}
+
+@keyframes ping {
+    0% {
+        transform: scale(0.2);
+        opacity: 0.8;
+    }
+    80% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+} 

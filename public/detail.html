@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Ambulans - AmbuLink</title>
+    <link href="/css/output.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <style>
+        #map { height: 400px; }
+        .facility-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            margin: 2px;
+            border-radius: 12px;
+            background-color: #EBF5FF;
+            color: #2563EB;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <span class="text-2xl font-bold text-blue-600">AmbuLink</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-3xl mx-auto py-8 px-4">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <!-- Loading State -->
+            <div id="loadingState" class="p-8 text-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mx-auto"></div>
+                <p class="mt-4 text-gray-600">Memuat data ambulans...</p>
+            </div>
+
+            <!-- Content -->
+            <div id="content" class="hidden">
+                <!-- Header -->
+                <div class="relative h-48 bg-gradient-to-r from-blue-600 to-blue-400">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <i class="fas fa-ambulance text-white text-6xl"></i>
+                    </div>
+                </div>
+
+                <!-- Info -->
+                <div class="p-6">
+                    <h1 id="nama" class="text-3xl font-bold text-gray-800 mb-4"></h1>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-700 mb-4">Informasi Umum</h2>
+                            <div class="space-y-3">
+                                <div>
+                                    <span class="text-gray-600">Status:</span>
+                                    <span id="status" class="ml-2 font-medium"></span>
+                                </div>
+                                <div id="hargaContainer" class="hidden">
+                                    <span class="text-gray-600">Harga:</span>
+                                    <span id="harga" class="ml-2 font-medium"></span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-600">Kontak:</span>
+                                    <a id="kontak" href="#" class="ml-2 text-blue-600 hover:text-blue-700"></a>
+                                </div>
+                                <div>
+                                    <span class="text-gray-600">Alamat:</span>
+                                    <p id="alamat" class="mt-1 text-gray-800"></p>
+                                </div>
+                                <div>
+                                    <span class="text-gray-600">Kota:</span>
+                                    <span id="kota" class="ml-2 font-medium"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-700 mb-4">Fasilitas</h2>
+                            <div id="fasilitas" class="grid grid-cols-2 gap-2">
+                                <!-- Will be populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Map -->
+                    <div class="mt-8">
+                        <h2 class="text-lg font-semibold text-gray-700 mb-4">Lokasi</h2>
+                        <div id="map" class="rounded-lg border"></div>
+                        <div class="mt-4">
+                            <div id="jarakInfo" class="text-sm text-gray-600 mb-2"></div>
+                            <div id="estimasiWaktu" class="text-sm text-gray-600"></div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-8 flex justify-between items-center">
+                        <a href="/" class="text-gray-600 hover:text-gray-800">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Kembali ke Peta
+                        </a>
+                        <a id="whatsappLink" href="#" target="_blank" rel="noopener noreferrer"
+                           class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                            <i class="fab fa-whatsapp mr-2"></i>
+                            Hubungi via WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="hidden p-8 text-center">
+                <i class="fas fa-exclamation-circle text-red-500 text-4xl mb-4"></i>
+                <p class="text-gray-800 font-medium">Data ambulans tidak ditemukan</p>
+                <a href="/" class="mt-4 inline-block text-blue-600 hover:text-blue-700">
+                    Kembali ke Beranda
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <script>
+        let map, marker, userMarker, routingControl;
+
+        // Custom icons
+        const userIcon = L.divIcon({
+            className: 'bg-blue-500 w-4 h-4 rounded-full border-2 border-white shadow-lg',
+            iconSize: [16, 16],
+            iconAnchor: [8, 8],
+            popupAnchor: [0, -8]
+        });
+
+        const ambulansIcon = L.divIcon({
+            className: 'bg-red-500 w-4 h-4 rounded-full border-2 border-white shadow-lg',
+            iconSize: [16, 16],
+            iconAnchor: [8, 8],
+            popupAnchor: [0, -8]
+        });
+
+        // Get ambulance ID from URL
+        const ambulansId = window.location.pathname.split('/').pop();
+
+        // Initialize map
+        function initMap(lat, lng) {
+            map = L.map('map').setView([lat, lng], 15);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            marker = L.marker([lat, lng], { icon: ambulansIcon })
+                .bindPopup('Lokasi Ambulans')
+                .addTo(map);
+
+            // Try to get user's location
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+
+                    userMarker = L.marker([userLat, userLng], { icon: userIcon })
+                        .bindPopup('Lokasi Anda')
+                        .addTo(map);
+
+                    // Show route
+                    showRoute([userLat, userLng], [lat, lng]);
+
+                    // Calculate and display distance
+                    const distance = calculateDistance([userLat, userLng], [lat, lng]);
+                    document.getElementById('jarakInfo').textContent = 
+                        `Jarak dari lokasi Anda: ${distance.toFixed(1)} km`;
+
+                    // Estimate travel time (assuming average speed of 40 km/h)
+                    const timeInHours = distance / 40;
+                    const timeInMinutes = Math.round(timeInHours * 60);
+                    document.getElementById('estimasiWaktu').textContent = 
+                        `Estimasi waktu tempuh: ${timeInMinutes} menit`;
+
+                    // Fit bounds to show both markers
+                    map.fitBounds([
+                        [userLat, userLng],
+                        [lat, lng]
+                    ], { padding: [50, 50] });
+                });
+            }
+        }
+
+        // Show route between user and ambulance
+        function showRoute(from, to) {
+            if (routingControl) {
+                map.removeControl(routingControl);
+            }
+
+            routingControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(from[0], from[1]),
+                    L.latLng(to[0], to[1])
+                ],
+                routeWhileDragging: false,
+                showAlternatives: false,
+                fitSelectedRoutes: true,
+                lineOptions: {
+                    styles: [{ color: '#3B82F6', opacity: 0.6, weight: 4 }]
+                }
+            }).addTo(map);
+        }
+
+        // Calculate distance between two points
+        function calculateDistance(point1, point2) {
+            const R = 6371; // Earth's radius in km
+            const dLat = (point2[0] - point1[0]) * Math.PI / 180;
+            const dLon = (point2[1] - point1[1]) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                     Math.cos(point1[0] * Math.PI / 180) * Math.cos(point2[0] * Math.PI / 180) *
+                     Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // Format facilities
+        function formatFacilities(facilities) {
+            return facilities.map(facility => {
+                const facilityNames = {
+                    'oksigen': 'Tabung Oksigen',
+                    'stretcher': 'Stretcher',
+                    'ventilator': 'Ventilator',
+                    'defibrillator': 'Defibrillator',
+                    'medkit': 'Medical Kit'
+                };
+                return `<span class="facility-badge">${facilityNames[facility] || facility}</span>`;
+            }).join(' ');
+        }
+
+        // Load ambulance data
+        async function loadAmbulansData() {
+            try {
+                const response = await fetch(`/api/ambulans/${ambulansId}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message);
+                }
+
+                // Update content
+                document.getElementById('nama').textContent = data.nama;
+                document.getElementById('status').textContent = data.status.charAt(0).toUpperCase() + data.status.slice(1);
+                document.getElementById('status').className = 
+                    data.status === 'gratis' ? 'ml-2 font-medium text-green-600' : 'ml-2 font-medium text-blue-600';
+
+                if (data.status === 'berbayar' && data.harga) {
+                    document.getElementById('hargaContainer').classList.remove('hidden');
+                    document.getElementById('harga').textContent = formatCurrency(data.harga);
+                }
+
+                document.getElementById('kontak').textContent = data.kontak;
+                document.getElementById('kontak').href = `tel:${data.kontak}`;
+                document.getElementById('alamat').textContent = data.alamat;
+                document.getElementById('kota').textContent = data.kota;
+
+                // Update WhatsApp link
+                const whatsappText = `Halo, saya tertarik dengan layanan ambulans ${data.nama}. Apakah masih tersedia?`;
+                document.getElementById('whatsappLink').href = 
+                    `https://wa.me/${data.kontak.replace(/^0/, '62')}?text=${encodeURIComponent(whatsappText)}`;
+
+                // Add facilities
+                const fasilitasContainer = document.getElementById('fasilitas');
+                fasilitasContainer.innerHTML = formatFacilities(data.fasilitas);
+
+                // Initialize map
+                initMap(data.latitude, data.longitude);
+
+                // Show content
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('content').classList.remove('hidden');
+            } catch (error) {
+                console.error('Error loading ambulans data:', error);
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('errorState').classList.remove('hidden');
+            }
+        }
+
+        // Load data
+        loadAmbulansData();
+    </script>
+</body>
+</html> 
