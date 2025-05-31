@@ -5,10 +5,16 @@ const ambulansController = {
   getAllAmbulans: async (req, res) => {
     try {
       const ambulans = await Ambulans.getAll();
+      console.log('Retrieved ambulans data:', ambulans); // Debug log
       res.json(ambulans);
     } catch (error) {
       console.error('Error getting ambulans:', error);
-      res.status(500).json({ message: 'Terjadi kesalahan saat mengambil data ambulans' });
+      // Send more detailed error message
+      res.status(500).json({ 
+        message: 'Terjadi kesalahan saat mengambil data ambulans',
+        error: error.message,
+        code: error.code
+      });
     }
   },
 
@@ -20,8 +26,11 @@ const ambulansController = {
       }
       res.json(ambulans);
     } catch (error) {
-      console.error('Error getting ambulans:', error);
-      res.status(500).json({ message: 'Terjadi kesalahan saat mengambil data ambulans' });
+      console.error('Error getting ambulans by id:', error);
+      res.status(500).json({ 
+        message: 'Terjadi kesalahan saat mengambil data ambulans',
+        error: error.message
+      });
     }
   },
 
@@ -35,17 +44,25 @@ const ambulansController = {
       res.json(ambulans);
     } catch (error) {
       console.error('Error getting nearby ambulans:', error);
-      res.status(500).json({ message: 'Terjadi kesalahan saat mencari ambulans terdekat' });
+      res.status(500).json({ 
+        message: 'Terjadi kesalahan saat mencari ambulans terdekat',
+        error: error.message
+      });
     }
   },
 
   searchAmbulans: async (req, res) => {
     try {
+      console.log('Search query:', req.query); // Debug log
       const ambulans = await Ambulans.search(req.query);
+      console.log('Search results:', ambulans); // Debug log
       res.json(ambulans);
     } catch (error) {
       console.error('Error searching ambulans:', error);
-      res.status(500).json({ message: 'Terjadi kesalahan saat mencari ambulans' });
+      res.status(500).json({ 
+        message: 'Terjadi kesalahan saat mencari ambulans',
+        error: error.message
+      });
     }
   },
 

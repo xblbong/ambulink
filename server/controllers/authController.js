@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
-
-const JWT_SECRET = 'ambulink_secret_key_2024';
+const config = require('../config/config');
 
 const authController = {
     // Register new user
@@ -45,9 +44,12 @@ const authController = {
 
             // Generate JWT token
             const token = jwt.sign(
-                { id: user.id, email: user.email },
-                JWT_SECRET,
-                { expiresIn: '24h' }
+                { 
+                    id: user.id, 
+                    email: user.email
+                },
+                config.jwtSecret,
+                { expiresIn: config.jwtExpiration }
             );
 
             res.json({

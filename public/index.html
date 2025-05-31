@@ -154,18 +154,9 @@
         }
 
         .location-button {
-            background-color: white;
-            color: #AA1919;
-            padding: 10px 16px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: all 0.2s ease;
-            border: 1px solid #AA1919;
-        }
-
-        .location-button:hover {
-            background-color: #AA1919;
-            color: white;
+            @apply bg-white text-[#AA1919] px-4 py-2 rounded-lg font-medium 
+                   hover:bg-gray-50 transition-colors border border-[#AA1919]
+                   flex items-center justify-center;
         }
 
         @keyframes slideIn {
@@ -182,6 +173,45 @@
         .gradient-bg {
             background: linear-gradient(135deg, #AA1919 0%, #8B0000 100%);
         }
+
+        /* Add responsive styles for the header */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 0.5rem;
+            }
+            
+            .space-x-4 > * + * {
+                margin-left: 0.5rem;
+            }
+            
+            .text-2xl {
+                font-size: 1.25rem;
+            }
+            
+            .location-button {
+                padding: 0.5rem 0.75rem;
+            }
+
+            #authButtons {
+                margin-left: 0.5rem;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .location-button span,
+            #authButtons span {
+                display: none;
+            }
+            
+            .location-button i,
+            #authButtons i {
+                margin-right: 0;
+            }
+            
+            .space-x-4 > * + * {
+                margin-left: 0.25rem;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -189,25 +219,42 @@
     <nav class="bg-white shadow-lg sticky top-0 z-50">
         <div class="container mx-auto">
             <div class="flex justify-between items-center h-16 px-4">
-                <div class="flex items-center space-x-4">
+                <!-- Left: Logo & Brand -->
+                <div class="flex items-center">
                     <a href="/" class="flex items-center space-x-3">
                         <i class="fas fa-ambulance text-2xl text-[#AA1919]"></i>
                         <span class="text-2xl font-bold text-[#AA1919]">AmbuLink</span>
                     </a>
                 </div>
+
+                <!-- Navigation Items -->
                 <div class="flex items-center space-x-4">
                     <button id="locateMe" class="location-button flex items-center">
                         <i class="fas fa-location-arrow mr-2"></i>
                         Lokasi Saya
                     </button>
-                    <a href="/tambah.html" class="location-button flex items-center">
+
+                    <!-- Tambah Ambulans - Always visible but conditionally interactive -->
+                    <a href="#" id="addAmbulansBtn" class="location-button flex items-center" onclick="handleAddAmbulans(event)">
                         <i class="fas fa-plus mr-2"></i>
                         Tambah Ambulans
                     </a>
-                    <button id="logoutBtn" class="text-gray-600 hover:text-[#AA1919] transition-colors">
-                        <i class="fas fa-sign-out-alt mr-2"></i>
-                        Keluar
-                    </button>
+
+                    <!-- Auth Buttons -->
+                    <div id="authButtons" class="flex items-center space-x-4">
+                        <a href="/login.html" id="loginBtn" class="text-gray-600 hover:text-[#AA1919] transition-colors">
+                            <i class="fas fa-sign-in-alt mr-2"></i>
+                            Masuk
+                        </a>
+                        <a href="/register.html" id="registerBtn" class="text-gray-600 hover:text-[#AA1919] transition-colors">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Daftar
+                        </a>
+                        <button id="logoutBtn" style="display: none;" class="text-gray-600 hover:text-[#AA1919] transition-colors">
+                            <i class="fas fa-sign-out-alt mr-2"></i>
+                            Keluar
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -232,55 +279,13 @@
 
     <!-- Main Content -->
     <div class="container mx-auto px-4 py-8">
-        <!-- Fitur Utama Section -->
-        <div class="mb-16">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Fitur Utama</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Pencarian Terdekat -->
-                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
-                    <div class="bg-red-100 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 mx-auto">
-                        <i class="fas fa-search text-2xl text-[#AA1919]"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-center mb-4">Pencarian Terdekat</h3>
-                    <p class="text-gray-600 text-center">
-                        Temukan ambulans terdekat dari lokasi Anda dengan cepat menggunakan peta interaktif
-                    </p>
-                </div>
-
-                <!-- Pendaftaran Layanan -->
-                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
-                    <div class="bg-red-100 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 mx-auto">
-                        <i class="fas fa-ambulance text-2xl text-[#AA1919]"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-center mb-4">Pendaftaran Layanan</h3>
-                    <p class="text-gray-600 text-center">
-                        Hubungi langsung penyedia layanan melalui nomor kontak hotline atau WhatsApp
-                    </p>
-                </div>
-
-                <!-- Informasi Lengkap -->
-                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
-                    <div class="bg-red-100 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 mx-auto">
-                        <i class="fas fa-info-circle text-2xl text-[#AA1919]"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-center mb-4">Informasi Lengkap</h3>
-                    <p class="text-gray-600 text-center">
-                        Bandingkan harga, fasilitas, dan layanan ambulans untuk mendapatkan bantuan yang tepat
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        
-
-        
         <!-- Filter Section -->
         <div class="bg-white rounded-xl shadow-lg p-6 mb-8 w-full" id="filter-pencarian">
             <h3 class="text-xl font-semibold mb-6 text-gray-800 flex items-center">
                 <i class="fas fa-filter mr-2 text-[#AA1919]"></i>
                 Filter Pencarian
             </h3>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
                 <div class="group">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Radius Pencarian</label>
                     <select id="filterRadius" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#AA1919] focus:ring focus:ring-[#AA1919] focus:ring-opacity-50 transition-all duration-300 hover:border-[#AA1919]">
@@ -291,7 +296,6 @@
                         <option value="10">10 km</option>
                         <option value="25">25 km</option>
                     </select>
-                    <p class="mt-1 text-xs text-gray-500">Pilih radius pencarian dari lokasi Anda</p>
                 </div>
                 <div class="group">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Provinsi</label>
@@ -320,8 +324,9 @@
                     <select id="filterJenisLayanan" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#AA1919] focus:ring focus:ring-[#AA1919] focus:ring-opacity-50 transition-all duration-300 hover:border-[#AA1919]">
                         <option value="">Semua Layanan</option>
                         <option value="gawat_darurat">Gawat Darurat</option>
+                        <option value="non_gawat_darurat">Non Gawat Darurat</option>
                         <option value="transportasi">Transportasi</option>
-                        <option value="lainnya">Lainnya</option>
+                        <option value="jenazah">Jenazah</option>
                     </select>
                 </div>
                 <div class="group">
@@ -334,6 +339,7 @@
                 </div>
             </div>
         </div>
+
         <!-- Content Section -->
         <div class="flex flex-col md:flex-row gap-8 mb-16">
             <!-- Map Section -->
@@ -367,26 +373,59 @@
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Statistik -->
-                <div class="col-span-2 grid grid-cols-2 gap-4">
-                    <div class="h-48">
-                        <canvas id="ambulanceTypeChart"></canvas>
-                    </div>
-                    <div class="h-48">
-                        <canvas id="ambulanceStatusChart"></canvas>
+                <div class="col-span-2">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-lg mb-3 text-[#AA1919]">Distribusi Tipe Ambulans</h4>
+                            <div class="h-48">
+                                <canvas id="ambulanceTypeChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-lg mb-3 text-[#AA1919]">Status Layanan Ambulans</h4>
+                            <div class="h-48">
+                                <canvas id="ambulanceStatusChart"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- Rekomendasi Terdekat -->
                 <div class="bg-gray-50 p-4 rounded-lg">
                     <h4 class="font-semibold text-lg mb-3 text-[#AA1919]">Ambulans Terdekat</h4>
-                    <div id="nearestAmbulance" class="space-y-3">
+                    <div id="nearestAmbulance" class="space-y-4">
                         <!-- Will be filled by JavaScript -->
                     </div>
                 </div>
             </div>
         </div>
 
-        
+    <!-- Ambulance Card Template -->
+    <template id="ambulanceCardTemplate">
+        <div class="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-800"></h3>
+                <span class="status-badge px-3 py-1 rounded-full text-sm font-medium"></span>
     </div>
+            <div class="space-y-2">
+                <p class="text-sm text-gray-600 flex items-center">
+                    <i class="fas fa-hospital mr-2"></i>
+                    <span class="tipe"></span>
+                </p>
+                <p class="text-sm text-gray-600 flex items-center">
+                    <i class="fas fa-map-marker-alt mr-2"></i>
+                    <span class="alamat"></span>
+                </p>
+                <p class="text-sm text-gray-600 flex items-center">
+                    <i class="fas fa-phone mr-2"></i>
+                    <span class="kontak"></span>
+                </p>
+                <div class="fasilitas flex flex-wrap gap-2 mt-3">
+                    <!-- Fasilitas badges will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </template>
+
     <!-- Footer -->
     <footer class="bg-gradient-to-r from-[#AA1919] to-[#8B0000] text-white w-full">
         <div class="max-w-7xl mx-auto px-4 py-12">
@@ -489,9 +528,11 @@
             }
         });
 
-        // Check authentication
-        if (!localStorage.getItem('token')) {
-            window.location.href = '/login.html';
+        // Remove mandatory authentication check
+        let isAuthenticated = false;
+        const token = localStorage.getItem('token');
+        if (token) {
+            isAuthenticated = true;
         }
 
         let map = null;
@@ -512,25 +553,119 @@
             popupAnchor: [1, -34],
             shadowSize: [41, 41]
         });
-         
-        const userIcon = L.icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
+
+        const userIcon = L.divIcon({
+            className: 'user-location-marker',
+            html: `<div style="
+                width: 20px;
+                height: 20px;
+                background-color: #4A90E2;
+                border: 3px solid white;
+                border-radius: 50%;
+                box-shadow: 0 0 10px rgba(0,0,0,0.5);
+                position: relative;
+            ">
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 30px;
+                    height: 30px;
+                    background-color: rgba(74, 144, 226, 0.3);
+                    border-radius: 50%;
+                    animation: pulse 2s infinite;
+                "></div>
+            </div>`,
+            iconSize: [20, 20],
+            iconAnchor: [10, 10]
         });
 
-         // Helper function untuk menampilkan jenis layanan
-         function getJenisLayananLabel(value) {
-            const labels = {
-                'gawat_darurat': 'Gawat Darurat',
-                'transportasi': 'Transportasi',
-                'lainnya': 'Lainnya'
-            };
-            return labels[value] || value;
+        // Add pulse animation style
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% {
+                    transform: translate(-50%, -50%) scale(1);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translate(-50%, -50%) scale(3);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize map and load data
+        document.addEventListener('DOMContentLoaded', async () => {
+            initMap();
+            await loadAmbulanceData();
+            await getCurrentLocation();
+            setupEventListeners();
+            updateUI();
+        });
+
+        // Update UI based on authentication
+        function updateUI() {
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const addAmbulansBtn = document.getElementById('addAmbulansBtn');
+
+            if (isAuthenticated) {
+                // After login: Enable Tambah Ambulans and show Logout
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+                logoutBtn.style.display = 'flex';
+                addAmbulansBtn.onclick = () => window.location.href = '/tambah.html';
+            } else {
+                // Before login: Show login/register buttons and disable Tambah Ambulans
+                loginBtn.style.display = 'flex';
+                registerBtn.style.display = 'flex';
+                logoutBtn.style.display = 'none';
+                addAmbulansBtn.onclick = (e) => {
+                    e.preventDefault();
+                    alert('Anda harus login terlebih dahulu untuk menambah ambulans.');
+                    return false;
+                };
+            }
         }
+
+        // Function to handle Add Ambulans button click
+        function handleAddAmbulans(event) {
+            if (!isAuthenticated) {
+                event.preventDefault();
+                alert('Anda harus login terlebih dahulu untuk menambah ambulans.');
+                return false;
+            }
+            window.location.href = '/tambah.html';
+        }
+
+        // Add ambulance button click handler
+        document.getElementById('addAmbulansBtn')?.addEventListener('click', () => {
+            if (!isAuthenticated) {
+                showToast('Silakan login terlebih dahulu untuk menambah ambulans', 'info');
+                setTimeout(() => {
+                    window.location.href = '/login.html';
+                }, 2000);
+                return;
+            }
+            window.location.href = '/tambah.html';
+        });
+
+        // Login button click handler
+        document.getElementById('loginBtn')?.addEventListener('click', () => {
+            window.location.href = '/login.html';
+        });
+
+        // Logout button click handler
+        document.getElementById('logoutBtn')?.addEventListener('click', () => {
+            localStorage.removeItem('token');
+            isAuthenticated = false;
+            updateUI();
+            showToast('Berhasil logout', 'success');
+        });
 
         // Initialize map
         function initMap() {
@@ -583,172 +718,76 @@
         }
 
         // Get current location
-        function getCurrentLocation() {
-            showToast('Mencari lokasi Anda...', 'info');
+        async function getCurrentLocation() {
+            try {
+                showToast('Mencari lokasi Anda...', 'info');
 
-            if (!navigator.geolocation) {
-                showToast('Browser Anda tidak mendukung geolokasi. Silakan pilih lokasi manual.', 'error');
-                enableManualLocationSelection();
-                return;
-            }
+                if (!navigator.geolocation) {
+                    throw new Error('Browser Anda tidak mendukung geolokasi');
+                }
 
-            // Clear existing location markers
-            if (userMarker) {
-                map.removeLayer(userMarker);
-            }
-            if (locationCircle) {
-                map.removeLayer(locationCircle);
-            }
-
-            // Watchposition untuk mendapatkan update lokasi secara real-time
-            const watchId = navigator.geolocation.watchPosition(
-                // Success callback
-                (position) => {
-                    console.log("Data lokasi lengkap:", {
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude,
-                        accuracy: position.coords.accuracy,
-                        altitude: position.coords.altitude,
-                        heading: position.coords.heading,
-                        speed: position.coords.speed,
-                        timestamp: new Date(position.timestamp).toISOString()
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject, {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
                     });
+                });
 
-                    const { latitude, longitude, accuracy } = position.coords;
-                    
-                    // Validate coordinates
-                    if (!isValidCoordinates(latitude, longitude)) {
-                        console.error("Koordinat tidak valid:", { latitude, longitude });
-                        showToast('Koordinat lokasi tidak valid. Silakan pilih lokasi manual.', 'error');
-                        enableManualLocationSelection();
-                        return;
-                    }
+                userLocation = [position.coords.latitude, position.coords.longitude];
+                console.log('Data lokasi lengkap:', { lat: userLocation[0], lng: userLocation[1] });
 
-                    // Hanya update jika akurasi cukup baik (kurang dari 100 meter)
-                    if (accuracy > 100) {
-                        console.log("Menunggu akurasi lebih baik...", accuracy);
-                        return;
-                    }
+                // Remove existing user marker if any
+                if (userMarker) {
+                    map.removeLayer(userMarker);
+                }
 
-                    // Stop watching setelah mendapat lokasi yang akurat
-                    navigator.geolocation.clearWatch(watchId);
+                // Add user marker with custom icon
+                userMarker = L.marker(userLocation, {
+                    icon: userIcon,
+                    zIndexOffset: 1000, // Make sure user marker is always on top
+                    draggable: true
+                }).addTo(map);
 
-                    userLocation = [latitude, longitude];
+                // Add a popup to the user marker
+                userMarker.bindPopup('Lokasi Anda (geser untuk mengubah)').openPopup();
 
-                    // Create user marker with popup showing coordinates and accuracy
-                    userMarker = L.marker([latitude, longitude], {
-                        icon: userIcon,
-                        draggable: true
-                    })
-                        .addTo(map)
-                        .bindPopup(
-                            `Lokasi Anda<br>` +
-                            `Lat: ${latitude.toFixed(6)}<br>` +
-                            `Lng: ${longitude.toFixed(6)}<br>` +
-                            `Akurasi: ±${Math.round(accuracy)}m<br>` +
-                            `<small>(Drag untuk mengubah)</small>`
-                        )
-                        .openPopup();
+                // Center map on user location with animation
+                map.flyTo(userLocation, 13, {
+                    duration: 1.5,
+                    easeLinearity: 0.25
+                });
 
-                    // Add accuracy circle dengan radius yang lebih kecil
-                    const circleRadius = Math.min(accuracy, 100); // Maksimal radius 100 meter
-                    if (locationCircle) {
-                        map.removeLayer(locationCircle);
-                    }
-                    locationCircle = L.circle([latitude, longitude], {
-                        radius: circleRadius,
-                        color: '#3388ff',
-                        fillColor: '#3388ff',
-                        fillOpacity: 0.1,
-                        weight: 1
-                    }).addTo(map);
-
-                    // Update circle when marker is dragged
-                    userMarker.on('dragstart', () => {
-                        if (locationCircle) {
-                            map.removeLayer(locationCircle);
-                        }
-                    });
-
-                    userMarker.on('dragend', function(event) {
-                        const marker = event.target;
-                        const position = marker.getLatLng();
-                        userLocation = [position.lat, position.lng];
-                        
-                        // Update marker popup
-                        marker.setPopupContent(
-                            `Lokasi Anda (Manual)<br>` +
-                            `Lat: ${position.lat.toFixed(6)}<br>` +
-                            `Lng: ${position.lng.toFixed(6)}`
-                        );
-                        
-                        saveLastLocation(userLocation);
-                        updateMarkers();
-                        updateNearestAmbulance();
-                    });
-
-                    // Zoom to user location
-                    map.setView([latitude, longitude], 15);
-                    
-                    showToast(`Lokasi ditemukan! (Akurasi: ±${Math.round(accuracy)}m)`, 'success');
-                    saveLastLocation(userLocation);
-                    updateMarkers();
+                // Update when marker is dragged
+                userMarker.on('dragend', function(e) {
+                    userLocation = [e.target.getLatLng().lat, e.target.getLatLng().lng];
                     updateNearestAmbulance();
+                    updateRadiusVisualization();
+                });
 
-                    // Bring user marker to front
-                    if (userMarker && typeof userMarker.bringToFront === 'function') {
-                        try {
-                            userMarker.bringToFront();
-                        } catch (error) {
-                            console.warn('Could not bring user marker to front:', error);
-                        }
-                    }
-                },
-                // Error callback
-                (error) => {
-                    console.error("Error detail lokasi:", {
-                        code: error.code,
-                        message: error.message,
-                        PERMISSION_DENIED: error.PERMISSION_DENIED,
-                        POSITION_UNAVAILABLE: error.POSITION_UNAVAILABLE,
-                        TIMEOUT: error.TIMEOUT
-                    });
+                // Initial updates
+                updateNearestAmbulance();
+                updateRadiusVisualization();
+                showToast('Lokasi berhasil ditemukan!', 'success');
 
-                    let errorMessage = 'Gagal mendapatkan lokasi: ';
-                    
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            errorMessage += 'Izin lokasi ditolak. Pastikan GPS aktif dan izin lokasi diizinkan di browser Anda.';
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            errorMessage += 'Informasi lokasi tidak tersedia. Pastikan GPS aktif dan koneksi internet stabil.';
-                            break;
-                        case error.TIMEOUT:
-                            errorMessage += 'Waktu permintaan lokasi habis. Coba refresh halaman atau gunakan pilih lokasi manual.';
-                            break;
-                        default:
-                            errorMessage += error.message;
-                    }
-                    
-                    showToast(errorMessage, 'error');
-                    tryLoadLastLocation() || enableManualLocationSelection();
-                },
-                // Options
-                {
-                    enableHighAccuracy: true, // Gunakan GPS untuk akurasi tinggi
-                    timeout: 15000, // Timeout 15 detik
-                    maximumAge: 0 // Selalu minta posisi baru
+                return true;
+            } catch (error) {
+                console.error('Error getting location:', error);
+                let errorMessage = 'Gagal mendapatkan lokasi: ';
+                
+                if (error.code === 1) {
+                    errorMessage += 'Izin lokasi ditolak. Aktifkan izin lokasi di browser Anda.';
+                } else if (error.code === 2) {
+                    errorMessage += 'Lokasi tidak tersedia. Pastikan GPS aktif.';
+                } else if (error.code === 3) {
+                    errorMessage += 'Waktu pencarian lokasi habis.';
+                } else {
+                    errorMessage += error.message;
                 }
-            );
-
-            // Timeout untuk watchPosition
-            setTimeout(() => {
-                navigator.geolocation.clearWatch(watchId);
-                if (!userLocation) {
-                    showToast('Tidak dapat mendapatkan lokasi yang akurat. Silakan pilih lokasi manual.', 'error');
-                    enableManualLocationSelection();
-                }
-            }, 15000);
+                
+                showToast(errorMessage, 'error');
+                return false;
+            }
         }
 
         // Validate coordinates
@@ -802,9 +841,12 @@
             showToast('Klik pada peta untuk memilih lokasi Anda', 'info');
         }
 
-        // Handle location button click
-        document.getElementById('locateMe').addEventListener('click', () => {
-            getCurrentLocation();
+        // Add click handler for location button with retry
+        document.getElementById('locateMe').addEventListener('click', async () => {
+            const success = await getCurrentLocation();
+            if (!success) {
+                showToast('Klik tombol lokasi untuk mencoba lagi', 'info');
+            }
         });
 
         // Clean up function
@@ -840,38 +882,6 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Initialize map first
-            initMap();
-            
-            // Load provinsi data
-            loadProvinsiData();
-            
-            // Get user location and load ambulances
-            await getCurrentLocation();
-            await loadAmbulanceData();
-            
-            // Set up filter event listeners
-            document.getElementById('filterProvinsi').addEventListener('change', handleFilterChange);
-            document.getElementById('filterKota').addEventListener('change', handleFilterChange);
-            document.getElementById('filterTipe').addEventListener('change', handleFilterChange);
-            document.getElementById('filterJenisLayanan').addEventListener('change', handleFilterChange);
-            document.getElementById('filterStatus').addEventListener('change', handleFilterChange);
-            document.getElementById('filterRadius').addEventListener('change', () => {
-                updateRadiusVisualization();
-                handleFilterChange();
-            });
-            
-            // Add this line after loadAmbulanceData()
-            updateNearestAmbulance();
-            
-            // Update recommendation when location changes
-            if (userMarker) {
-                userMarker.on('dragend', updateNearestAmbulance);
-            }
-        });
-
         // Handle filter changes
         function handleFilterChange() {
             updateCards();
@@ -885,11 +895,13 @@
                 return;
             }
 
+            // Clean up existing route if any
             if (routingControl) {
                 map.removeControl(routingControl);
                 routingControl = null;
             }
 
+            // Create new route
             routingControl = L.Routing.control({
                 waypoints: [
                     L.latLng(userLocation[0], userLocation[1]),
@@ -902,10 +914,10 @@
                 lineOptions: {
                     styles: [{ color: '#AA1919', weight: 6 }]
                 },
-                createMarker: function() { return null; },
+                createMarker: function() { return null; }, // Don't create additional markers
                 show: false,
-                routeWhileDragging: false,
                 addWaypoints: false,
+                routeWhileDragging: false,
                 fitSelectedRoutes: true
             }).addTo(map);
 
@@ -915,74 +927,180 @@
                 const distance = (route.summary.totalDistance/1000).toFixed(1);
                 const duration = Math.round(route.summary.totalTime/60);
                 
-                // Create route info modal
-                const modal = document.createElement('div');
-                modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
-                modal.innerHTML = `
-                    <div class="bg-white rounded-lg p-6 w-full max-w-md">
-                        <h3 class="text-xl font-bold mb-4 flex items-center">
-                            <i class="fas fa-route text-[#AA1919] mr-2"></i>
-                            Rute ke ${name}
-                        </h3>
-                        <div class="space-y-4">
-                            <div class="flex items-center text-gray-700">
-                                <i class="fas fa-road w-8"></i>
-                                <span>Jarak: ${distance} km</span>
-                            </div>
-                            <div class="flex items-center text-gray-700">
-                                <i class="fas fa-clock w-8"></i>
-                                <span>Estimasi waktu: ${duration} menit</span>
-                            </div>
-                            <div class="flex items-center text-gray-700">
-                                <i class="fas fa-info-circle w-8"></i>
-                                <span class="text-sm">*Estimasi waktu dapat berubah tergantung kondisi lalu lintas</span>
-                            </div>
-                        </div>
-                        <div class="mt-6 flex justify-end">
-                            <button onclick="this.parentElement.parentElement.parentElement.remove()" 
-                                    class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors">
-                                Tutup
-                            </button>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(modal);
+                // Fit the map to show the entire route
+                map.fitBounds(L.latLngBounds(route.coordinates));
+                
+                // Show route info
+                showToast(`Rute ke ${name}: ${distance} km (±${duration} menit)`, 'info');
             });
         }
 
         // Load ambulance data
         async function loadAmbulanceData() {
             try {
-                const response = await fetch('/api/ambulans', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
+                const response = await fetch('/api/ambulans');
                 
                 if (!response.ok) {
                     throw new Error('Failed to fetch ambulance data');
                 }
 
-                ambulanceData = await response.json();
-                console.log('Data dari database:', ambulanceData);
+                const data = await response.json();
                 
-                // Pastikan data yang diterima adalah array
-                if (!Array.isArray(ambulanceData)) {
-                    if (ambulanceData.data && Array.isArray(ambulanceData.data)) {
-                        ambulanceData = ambulanceData.data;
-                    } else {
-                        throw new Error('Data format is invalid');
-                    }
+                // Ensure ambulanceData is always an array
+                ambulanceData = Array.isArray(data) ? data : (data.data || []);
+                
+                console.log('Loaded ambulance data:', ambulanceData);
+                
+                if (ambulanceData.length === 0) {
+                    showToast('Tidak ada data ambulans yang tersedia', 'info');
+                    return;
                 }
 
+                // Parse fasilitas for each ambulance if it's a JSON string
+                ambulanceData = ambulanceData.map(ambulance => ({
+                    ...ambulance,
+                    fasilitas: typeof ambulance.fasilitas === 'string' ? 
+                        JSON.parse(ambulance.fasilitas || '[]') : 
+                        (Array.isArray(ambulance.fasilitas) ? ambulance.fasilitas : [])
+                }));
+
+                // Update UI components
                 updateFilters();
                 updateCards();
                 updateMarkers();
                 updateStatistics();
+                if (userLocation) {
+                    updateNearestAmbulance();
+                }
             } catch (error) {
                 console.error('Error loading ambulance data:', error);
                 showToast('Gagal memuat data ambulans: ' + error.message, 'error');
             }
+        }
+
+        // Filter ambulance data
+        function filterAmbulanceData() {
+            const filters = {
+                provinsi: document.getElementById('filterProvinsi').value,
+                kota: document.getElementById('filterKota').value,
+                tipe: document.getElementById('filterTipe').value,
+                jenisLayanan: document.getElementById('filterJenisLayanan').value,
+                status: document.getElementById('filterStatus').value,
+                radius: document.getElementById('filterRadius')?.value || 0
+            };
+            
+            console.log('Applying filters:', filters);
+            
+            return ambulanceData.filter(ambulance => {
+                // Basic filters
+                const matchProvinsi = !filters.provinsi || ambulance.provinsi?.toLowerCase() === filters.provinsi.toLowerCase();
+                const matchKota = !filters.kota || ambulance.kota?.toLowerCase() === filters.kota.toLowerCase();
+                const matchTipe = !filters.tipe || ambulance.tipe_instansi?.toLowerCase() === filters.tipe.toLowerCase();
+                const matchJenisLayanan = !filters.jenisLayanan || ambulance.jenis_layanan?.toLowerCase() === filters.jenisLayanan.toLowerCase();
+                const matchStatus = !filters.status || ambulance.status?.toLowerCase() === filters.status.toLowerCase();
+
+                // Radius filter
+                let matchRadius = true;
+                if (userLocation && filters.radius > 0) {
+                    const distance = calculateDistance(
+                        userLocation[0],
+                        userLocation[1],
+                        ambulance.latitude,
+                        ambulance.longitude
+                    );
+                    matchRadius = distance <= filters.radius;
+                }
+
+                return matchProvinsi && matchKota && matchTipe && 
+                       matchJenisLayanan && matchStatus && matchRadius;
+            });
+        }
+
+        // Update nearest ambulance
+        async function updateNearestAmbulance() {
+            const nearestContainer = document.getElementById('nearestAmbulance');
+            
+            if (!userLocation || !ambulanceData || ambulanceData.length === 0) {
+                console.log('Lokasi belum tersedia untuk mencari ambulans terdekat');
+                nearestContainer.innerHTML = '<p class="text-gray-500">Aktifkan lokasi untuk melihat ambulans terdekat</p>';
+                return;
+            }
+
+            try {
+                // Get filtered data first
+                const filteredByCity = document.getElementById('filterKota').value;
+                let filteredData = ambulanceData;
+                
+                if (filteredByCity) {
+                    filteredData = ambulanceData.filter(ambulance => 
+                        ambulance.kota.toLowerCase() === filteredByCity.toLowerCase()
+                    );
+                }
+
+                // Calculate distance for each ambulance
+                const ambulancesWithDistance = filteredData.map(ambulance => ({
+                    ...ambulance,
+                    distance: calculateDistance(
+                        userLocation[0],
+                        userLocation[1],
+                        parseFloat(ambulance.latitude),
+                        parseFloat(ambulance.longitude)
+                    )
+                }));
+
+                // Filter ambulances within 10km and sort by distance
+                const nearestAmbulances = ambulancesWithDistance
+                    .filter(ambulance => ambulance.distance <= 10) // Only show ambulances within 10km
+                    .sort((a, b) => a.distance - b.distance)
+                    .slice(0, 5); // Show top 5 nearest
+
+                // Update UI
+                if (nearestAmbulances.length === 0) {
+                    nearestContainer.innerHTML = '<p class="text-gray-500">Tidak ada ambulans dalam radius 10km</p>';
+                    return;
+                }
+
+                nearestContainer.innerHTML = nearestAmbulances.map(ambulance => `
+                    <div class="bg-white rounded-lg shadow p-4 mb-4 hover:shadow-lg transition-shadow">
+                        <div class="flex justify-between items-start">
+                            <h4 class="font-semibold text-gray-800">${ambulance.nama}</h4>
+                            <span class="text-sm ${ambulance.status === 'gratis' ? 'text-green-600' : 'text-blue-600'}">
+                                ${ambulance.status.toUpperCase()}
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-1">
+                            <i class="fas fa-map-marker-alt text-red-500 mr-1"></i>
+                            ${ambulance.alamat}
+                        </p>
+                        <p class="text-sm text-gray-600 mt-1">
+                            <i class="fas fa-road text-blue-500 mr-1"></i>
+                            Jarak: ${ambulance.distance.toFixed(1)} km
+                        </p>
+                        <button onclick="getRoute([${ambulance.latitude}, ${ambulance.longitude}], '${ambulance.nama.replace(/'/g, "\\'")}')" 
+                                class="mt-2 w-full bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 transition-colors">
+                            <i class="fas fa-directions mr-1"></i>
+                            Lihat Rute
+                        </button>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error updating nearest ambulance:', error);
+                nearestContainer.innerHTML = '<p class="text-red-500">Gagal memuat data ambulans terdekat</p>';
+            }
+        }
+
+        // Calculate distance between two points in kilometers
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the Earth in kilometers
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
         }
 
         // Function to create ambulance card
@@ -1094,7 +1212,7 @@
                 ` : ''}
                 <div class="mt-4 space-y-2">
                     ${userLocation ? `
-                    <button onclick="getRoute([${ambulance.latitude}, ${ambulance.longitude}], '${ambulance.nama}')" 
+                    <button onclick="getRoute([${ambulance.latitude}, ${ambulance.longitude}], '${ambulance.nama.replace(/'/g, "\\'")}')" 
                             class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
                         <i class="fas fa-directions mr-2"></i>Lihat Rute
                     </button>
@@ -1175,7 +1293,7 @@
                     }
                 </div>
                 ${userLocation ? `
-                <button onclick="getRoute([${ambulans.latitude}, ${ambulans.longitude}], '${ambulans.nama}')" 
+                <button onclick="getRoute([${ambulans.latitude}, ${ambulans.longitude}], '${ambulans.nama.replace(/'/g, "\\'")}')" 
                         class="w-full mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors text-sm">
                     <i class="fas fa-directions mr-2"></i>Lihat Rute
                 </button>
@@ -1194,6 +1312,11 @@
             // Get filtered data
             const filteredData = filterAmbulanceData();
             console.log('Filtered ambulance data:', filteredData);
+            
+            if (!filteredData || filteredData.length === 0) {
+                showToast('Tidak ada ambulans yang sesuai dengan filter yang dipilih', 'info');
+                return;
+            }
             
             // Add new markers for filtered data only
             filteredData.forEach(ambulans => {
@@ -1214,14 +1337,23 @@
             });
 
             // Fit bounds only if no user location is set
-            if (markers.length > 0 && !userLocation) {
+            if (markers.length > 0) {
+                if (!userLocation) {
                 const group = L.featureGroup(markers);
                 map.fitBounds(group.getBounds(), {
                     padding: [50, 50]
                 });
+                } else {
+                    // If user location exists, include it in the bounds
+                    const allPoints = [...markers, userMarker];
+                    const group = L.featureGroup(allPoints);
+                map.fitBounds(group.getBounds(), {
+                    padding: [50, 50]
+                });
+                }
             }
 
-            // Bring user marker to front if it exists and is a valid Leaflet marker
+            // Bring user marker to front if it exists
             if (userMarker && typeof userMarker.bringToFront === 'function') {
                 try {
                     userMarker.bringToFront();
@@ -1229,21 +1361,6 @@
                     console.warn('Could not bring user marker to front:', error);
                 }
             }
-        }
-
-        // Calculate distance between two points
-        function calculateDistance(point1, point2) {
-            const R = 6371; // Earth's radius in km
-            const lat1 = point1[0] * Math.PI / 180;
-            const lat2 = point2[0] * Math.PI / 180;
-            const deltaLat = (point2[0] - point1[0]) * Math.PI / 180;
-            const deltaLon = (point2[1] - point1[1]) * Math.PI / 180;
-
-            const a = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) +
-                    Math.cos(lat1) * Math.cos(lat2) *
-                    Math.sin(deltaLon/2) * Math.sin(deltaLon/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return (R * c).toFixed(1);
         }
 
         // Function to format price
@@ -1274,42 +1391,37 @@
             }
 
             filteredData.forEach(ambulance => {
-                container.appendChild(createAmbulanceCard(ambulance));
-            });
-        }
-
-        // Filter functions
-        function filterAmbulanceData() {
-            const provinsi = document.getElementById('filterProvinsi').value;
-            const kota = document.getElementById('filterKota').value;
-            const tipe = document.getElementById('filterTipe').value;
-            const jenisLayanan = document.getElementById('filterJenisLayanan').value;
-            const status = document.getElementById('filterStatus').value;
-            const radius = parseFloat(document.getElementById('filterRadius').value);
-
-            return ambulanceData.filter(ambulance => {
-                // Filter berdasarkan provinsi
-                if (provinsi && ambulance.provinsi !== provinsi) return false;
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow p-6';
                 
-                // Filter berdasarkan kota
-                if (kota && ambulance.kota !== kota) return false;
-                
-                // Filter berdasarkan tipe instansi
-                if (tipe && ambulance.tipe_instansi !== tipe) return false;
-                
-                // Filter berdasarkan jenis layanan
-                if (jenisLayanan && ambulance.jenis_layanan !== jenisLayanan) return false;
-                
-                // Filter berdasarkan status layanan
-                if (status && ambulance.status !== status) return false;
-
-                // Filter berdasarkan radius jika ada lokasi user dan radius dipilih
-                if (userLocation && radius > 0) {
-                    const distance = calculateDistance(userLocation, [ambulance.latitude, ambulance.longitude]);
-                    if (distance > radius) return false;
-                }
-                
-                return true;
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">${ambulance.nama || ''}</h3>
+                        <span class="status-badge px-3 py-1 rounded-full text-sm font-medium">${ambulance.status.toUpperCase()}</span>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600 flex items-center">
+                            <i class="fas fa-hospital mr-2"></i>
+                            <span class="tipe">${getTipeInstansiLabel(ambulance.tipe_instansi) || ''}</span>
+                        </p>
+                        <p class="text-sm text-gray-600 flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span class="alamat">${ambulance.alamat || ''}</span>
+                        </p>
+                        <p class="text-sm text-gray-600 flex items-center">
+                            <i class="fas fa-phone mr-2"></i>
+                            <span class="kontak">${ambulance.kontak || ''}</span>
+                        </p>
+                        <div class="fasilitas flex flex-wrap gap-2 mt-3">
+                            ${Array.isArray(ambulance.fasilitas) ? ambulance.fasilitas.map(f => `
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                    ${f}
+                                </span>
+                            `).join('') : ''}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
             });
         }
 
@@ -1459,12 +1571,6 @@
             updateMarkers();
         }
 
-        // Handle logout
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            localStorage.removeItem('token');
-            window.location.href = '/login.html';
-        });
-
         // Helper function untuk menampilkan tipe instansi
         function getTipeInstansiLabel(value) {
             const labels = {
@@ -1575,47 +1681,6 @@
             });
         }
 
-        // Add nearest ambulance recommendation
-        function updateNearestAmbulance() {
-            const container = document.getElementById('nearestAmbulance');
-            if (!userLocation || !ambulanceData.length) {
-                container.innerHTML = '<p class="text-gray-500">Aktifkan lokasi untuk melihat rekomendasi</p>';
-                return;
-            }
-
-            // Calculate distances and sort
-            const withDistance = ambulanceData.map(ambulance => ({
-                ...ambulance,
-                distance: calculateDistance(userLocation, [ambulance.latitude, ambulance.longitude])
-            }))
-            .filter(a => a.distance <= 5) // Only within 5km
-            .sort((a, b) => a.distance - b.distance)
-            .slice(0, 3); // Take top 3
-
-            if (withDistance.length === 0) {
-                container.innerHTML = '<p class="text-gray-500">Tidak ada ambulans dalam radius 5km</p>';
-                return;
-            }
-
-            container.innerHTML = withDistance.map(ambulance => `
-                <div class="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                    <div class="font-medium text-[#AA1919]">${ambulance.nama}</div>
-                    <div class="text-sm text-gray-600">
-                        <i class="fas fa-route mr-1"></i> ${ambulance.distance.toFixed(1)} km
-                    </div>
-                    <div class="text-sm text-gray-600">
-                        <i class="fas fa-phone mr-1"></i> ${ambulance.kontak}
-                    </div>
-                    <div class="mt-2">
-                        <button onclick="getRoute([${ambulance.latitude}, ${ambulance.longitude}], '${ambulance.nama}')"
-                                class="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors">
-                            <i class="fas fa-directions mr-1"></i>Rute
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
         // Add review functions
         function showReviewModal(ambulansId) {
             document.getElementById('reviewModal').classList.remove('hidden');
@@ -1689,6 +1754,83 @@
                 console.error('Error submitting review:', error);
                 showToast('Gagal mengirim review', 'error');
             }
+        });
+
+        // Add event listener for radius filter
+        document.getElementById('filterRadius').addEventListener('change', () => {
+            updateRadiusVisualization();
+            handleFilterChange();
+        });
+
+        // Province and City data
+        const provinceData = {
+            'Jawa Timur': ['Malang', 'Surabaya', 'Sidoarjo', 'Batu', 'Blitar', 'Kediri', 'Pasuruan', 'Probolinggo'],
+            'Jawa Barat': ['Bandung', 'Bogor', 'Depok', 'Bekasi', 'Cimahi', 'Tasikmalaya', 'Sukabumi'],
+            'DKI Jakarta': ['Jakarta Pusat', 'Jakarta Utara', 'Jakarta Barat', 'Jakarta Selatan', 'Jakarta Timur'],
+            // Add more provinces and cities as needed
+        };
+
+        // Initialize province dropdown
+        const provinceSelect = document.getElementById('filterProvinsi');
+        Object.keys(provinceData).forEach(province => {
+            const option = document.createElement('option');
+            option.value = province;
+            option.textContent = province;
+            provinceSelect.appendChild(option);
+        });
+
+        // Update city dropdown based on selected province
+        function updateCityOptions(province) {
+            const citySelect = document.getElementById('filterKota');
+            citySelect.innerHTML = '<option value="">Semua Kota</option>';
+            
+            if (province && provinceData[province]) {
+                provinceData[province].forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+                citySelect.disabled = false;
+            } else {
+                citySelect.disabled = true;
+            }
+        }
+
+        // Add event listeners for filters
+        provinceSelect.addEventListener('change', function() {
+            updateCityOptions(this.value);
+            handleFilterChange();
+        });
+
+        document.getElementById('filterKota').addEventListener('change', handleFilterChange);
+        document.getElementById('filterTipe').addEventListener('change', handleFilterChange);
+        document.getElementById('filterJenisLayanan').addEventListener('change', handleFilterChange);
+        document.getElementById('filterStatus').addEventListener('change', handleFilterChange);
+        document.getElementById('filterRadius').addEventListener('change', () => {
+            updateRadiusVisualization();
+            handleFilterChange();
+        });
+
+        // Initialize city dropdown
+        updateCityOptions(provinceSelect.value);
+
+        // Helper function untuk menampilkan jenis layanan
+        function getJenisLayananLabel(value) {
+            const labels = {
+                'gawat_darurat': 'Gawat Darurat',
+                'non_gawat_darurat': 'Non Gawat Darurat',
+                'transportasi': 'Transportasi',
+                'jenazah': 'Jenazah'
+            };
+            return labels[value] || value;
+        }
+
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            isAuthenticated = !!token;
+            updateUI();
         });
     </script>
 </body>

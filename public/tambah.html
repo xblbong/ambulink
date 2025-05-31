@@ -307,6 +307,7 @@
         // Check authentication
         if (!localStorage.getItem('token')) {
             window.location.href = '/login.html';
+            throw new Error('Token tidak ditemukan');
         }
 
         let map;
@@ -497,171 +498,129 @@
             }, 5000);
         }
 
-        // Handle form submission
+        // Add token refresh check
+        async function checkToken() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                const response = await fetch('/api/auth/check-token', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    localStorage.removeItem('token');
+                    window.location.href = '/login.html';
+                    throw new Error('Token tidak valid');
+                }
+            } catch (error) {
+                console.error('Error checking token:', error);
+                showToast('Silakan login terlebih dahulu', 'error');
+                setTimeout(() => {
+                    localStorage.removeItem('token');
+                    window.location.href = '/login.html';
+                }, 2000);
+            }
+        }
+
+        // Call checkToken on page load
+        document.addEventListener('DOMContentLoaded', checkToken);
+
+        // Modify form submission
         document.getElementById('ambulansForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // Get form data
-            const formData = new FormData(e.target);
-            
-            // Debug: Log raw form data
-            for (let [key, value] of formData.entries()) {
-                console.log(`Form field ${key}:`, value);
-            }
-
-            const nama = formData.get('nama');
-            const kontak = formData.get('kontak');
-            const whatsapp = formData.get('whatsapp');
-            const alamat = formData.get('alamat');
-            const provinsi = formData.get('provinsi');
-            const kota = formData.get('kota');
-            const latitude = formData.get('latitude');
-            const longitude = formData.get('longitude');
-            const status = formData.get('status');
-            const tipe_instansi = formData.get('tipe_instansi');
-            const jenis_layanan = formData.get('jenis_layanan');
-            const harga = formData.get('status') === 'berbayar' ? formData.get('harga') : 0;
-            const jam_operasional = formData.get('jam_operasional') || '';
-            const deskripsi = formData.get('deskripsi') || '';
-
-            // Get selected facilities
-            const fasilitas = Array.from(document.querySelectorAll('input[name="fasilitas"]:checked'))
-                .map(cb => cb.value);
-
-            // Debug: Log semua nilai form
-            console.log('Form values:', {
-                nama,
-                kontak,
-                whatsapp,
-                alamat,
-                provinsi,
-                kota,
-                latitude,
-                longitude,
-                status,
-                tipe_instansi,
-                jenis_layanan,
-                harga,
-                fasilitas,
-                jam_operasional,
-                deskripsi
-            });
-
-            // Validation checks
-            const errors = [];
-
-            if (nama.trim().length < 3) {
-                errors.push('Nama ambulans/instansi minimal 3 karakter');
-            }
-
-            // Validasi kontak (hanya angka, spasi, tanda kurung, dan strip)
-            if (!/^[0-9\-\(\)\s]+$/.test(kontak)) {
-                errors.push('Nomor kontak hanya boleh berisi angka, spasi, tanda kurung, dan strip');
-            }
-
-            // Validasi whatsapp jika diisi
-            if (whatsapp && !/^8[0-9]{9,11}$/.test(whatsapp)) {
-                errors.push('Nomor WhatsApp harus diawali dengan 8 dan panjang 10-12 digit');
-            }
-
-            if (alamat.trim().length < 10) {
-                errors.push('Alamat terlalu singkat, masukkan alamat lengkap');
-            }
-
-            if (!provinsi) {
-                errors.push('Pilih provinsi');
-            }
-
-            if (!kota) {
-                errors.push('Pilih kota/kabupaten');
-            }
-
-            if (!latitude || !longitude) {
-                errors.push('Pilih lokasi pada peta');
-            }
-
-            if (!status) {
-                errors.push('Pilih status layanan (gratis/berbayar)');
-            }
-
-            if (status === 'berbayar' && (!harga || harga <= 0)) {
-                errors.push('Masukkan harga yang valid untuk layanan berbayar');
-            }
-
-            if (fasilitas.length === 0) {
-                errors.push('Pilih minimal satu fasilitas');
-            }
-
-            if (errors.length > 0) {
-                const errorMessage = `<div class="font-medium">Mohon perbaiki kesalahan berikut:</div>
-                    <ul class="mt-2 list-disc list-inside">
-                        ${errors.map(err => `<li>${err}</li>`).join('')}
-                    </ul>`;
-                showToast(errorMessage, 'error');
-                return;
-            }
-
-            // Format WhatsApp number with +62 if exists
-            const formattedWhatsapp = whatsapp ? `+62${whatsapp}` : '';
-
-            // If validation passes, proceed with submission
-            const data = {
-                nama,
-                kontak,
-                whatsapp: formattedWhatsapp,
-                alamat,
-                provinsi,
-                kota,
-                latitude: Number(latitude),
-                longitude: Number(longitude),
-                status,
-                tipe_instansi,
-                jenis_layanan,
-                harga: Number(harga),
-                fasilitas,
-                jam_operasional: jam_operasional.trim() || null,
-                deskripsi: deskripsi.trim() || null,
-                user_id: 1
-            };
-
-            // Debug: Log data yang akan dikirim
-            console.log('Data yang akan dikirim ke server:', data);
-
             try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                // Check token validity first
+                const tokenCheck = await fetch('/api/auth/check-token', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!tokenCheck.ok) {
+                    localStorage.removeItem('token');
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                const formData = new FormData(e.target);
+
+                // Get selected facilities
+                const fasilitas = Array.from(document.querySelectorAll('input[name="fasilitas"]:checked'))
+                    .map(cb => cb.value);
+
+                // Validate required fields
+                const requiredFields = ['nama', 'kontak', 'alamat', 'provinsi', 'kota', 'latitude', 'longitude', 'status', 'tipe_instansi', 'jenis_layanan'];
+                for (const field of requiredFields) {
+                    if (!formData.get(field)) {
+                        throw new Error(`${field.charAt(0).toUpperCase() + field.slice(1).replace('_', ' ')} harus diisi`);
+                    }
+                }
+
+                // Validate coordinates
+                const latitude = Number(formData.get('latitude'));
+                const longitude = Number(formData.get('longitude'));
+                if (isNaN(latitude) || latitude < -90 || latitude > 90) {
+                    throw new Error('Latitude tidak valid. Silakan pilih lokasi di peta');
+                }
+                if (isNaN(longitude) || longitude < -180 || longitude > 180) {
+                    throw new Error('Longitude tidak valid. Silakan pilih lokasi di peta');
+                }
+
+                // Format data with proper handling of optional fields
+                const data = {
+                    nama: formData.get('nama'),
+                    kontak: formData.get('kontak'),
+                    whatsapp: formData.get('whatsapp') ? `+62${formData.get('whatsapp')}` : '-',
+                    alamat: formData.get('alamat'),
+                    provinsi: formData.get('provinsi'),
+                    kota: formData.get('kota'),
+                    latitude: latitude,
+                    longitude: longitude,
+                    status: formData.get('status'),
+                    tipe_instansi: formData.get('tipe_instansi'),
+                    jenis_layanan: formData.get('jenis_layanan'),
+                    harga: formData.get('status') === 'berbayar' ? Number(formData.get('harga')) || 0 : 0,
+                    fasilitas: fasilitas.length > 0 ? fasilitas : ['-'],
+                    jam_operasional: formData.get('jam_operasional') || '-',
+                    deskripsi: formData.get('deskripsi') || '-'
+                };
+
+                console.log('Sending data:', data); // Debug log
+
                 const response = await fetch('/api/ambulans', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify(data)
                 });
 
-                // Debug: Log response dari server
-                console.log('Response status:', response.status);
-                const responseText = await response.text();
-                console.log('Response text:', responseText);
-
-                let responseData;
-                try {
-                    responseData = JSON.parse(responseText);
-                    console.log('Response data:', responseData);
-                } catch (e) {
-                    console.error('Error parsing response:', e);
-                    throw new Error('Invalid response from server');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Gagal menambahkan ambulans');
                 }
 
-                if (response.ok) {
-                    showToast('Ambulans berhasil ditambahkan', 'success');
-                    setTimeout(() => {
-                        window.location.href = '/';
-                    }, 1500);
-                } else {
-                    throw new Error(responseData.message || 'Gagal menambahkan ambulans');
-                }
+                showToast('Data ambulans berhasil ditambahkan!', 'success');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
             } catch (error) {
                 console.error('Error saat mengirim data:', error);
-                showToast(error.message || 'Terjadi kesalahan', 'error');
+                showToast(error.message || 'Terjadi kesalahan saat menambahkan data', 'error');
             }
         });
 

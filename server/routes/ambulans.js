@@ -3,7 +3,6 @@ const router = express.Router();
 const { body } = require('express-validator');
 const ambulansController = require('../controllers/ambulansController');
 const auth = require('../middleware/auth');
-const checkRole = require('../middleware/checkRole');
 
 // Validasi untuk ambulans
 const ambulansValidation = [
@@ -34,8 +33,8 @@ const ambulansValidation = [
         .matches(/^[0-9+\-() ]+$/)
         .withMessage('Format nomor WhatsApp tidak valid'),
     body('fasilitas').optional()
-        .isString()
-        .withMessage('Fasilitas harus berupa teks'),
+        .isArray()
+        .withMessage('Fasilitas harus berupa array'),
     body('deskripsi').optional()
         .isString()
         .withMessage('Deskripsi harus berupa teks'),
@@ -50,31 +49,22 @@ router.get('/search', ambulansController.searchAmbulans);
 router.get('/nearby', ambulansController.getNearbyAmbulans);
 router.get('/:id', ambulansController.getAmbulansById);
 
-// Protected routes
-router.use(auth); // Middleware authentication untuk routes di bawah ini
-
-// Provider & Admin routes
+// Protected routes - hanya perlu login
 router.post('/', 
-    checkRole(['provider', 'admin']),
+    auth,
     ambulansValidation,
     ambulansController.createAmbulans
 );
 
 router.put('/:id',
-    checkRole(['provider', 'admin']),
+    auth,
     ambulansValidation,
     ambulansController.updateAmbulans
 );
 
 router.delete('/:id',
-    checkRole(['provider', 'admin']),
+    auth,
     ambulansController.deleteAmbulans
-);
-
-// Admin only routes
-router.patch('/:id/verify',
-    checkRole(['admin']),
-    ambulansController.verifyAmbulans
 );
 
 module.exports = router; 
