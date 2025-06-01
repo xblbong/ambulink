@@ -251,18 +251,34 @@
   <body class="bg-gray-50">
     <!-- Navbar -->
     <nav class="bg-white shadow-lg sticky top-0 z-50">
-      <div class="container mx-auto">
-        <div class="flex justify-between items-center h-16 px-4">
-          <!-- Left: Logo & Brand -->
-          <div class="flex items-center">
-            <a href="/" class="flex items-center space-x-3">
-              <i class="fas fa-ambulance text-2xl text-[#AA1919]"></i>
-              <span class="text-2xl font-bold text-[#AA1919]">AmbuLink</span>
+      <div class="container mx-auto px-4">
+        <div
+          class="flex flex-wrap items-center justify-between gap-4 md:gap-6 py-4 md:py-2"
+        >
+          <!-- Logo -->
+          <div class="flex items-center py-1">
+            <a href="/" class="flex items-center space-x-2 md:space-x-3">
+              <i
+                class="fas fa-ambulance text-xl md:text-2xl text-[#AA1919]"
+              ></i>
+              <span class="text-lg md:text-2xl font-bold text-[#AA1919]"
+                >AmbuLink</span
+              >
             </a>
           </div>
 
+          <!-- Hamburger Menu (Mobile) -->
+          <div class="md:hidden">
+            <button id="menuToggle" class="text-[#AA1919] focus:outline-none">
+              <i class="fas fa-bars text-2xl"></i>
+            </button>
+          </div>
+
           <!-- Navigation Items -->
-          <div class="flex items-center space-x-4">
+          <div
+            id="menuItems"
+            class="hidden md:flex items-center flex-wrap gap-3 md:gap-4"
+          >
             <button
               id="locateMe"
               class="location-button flex items-center text-[#AA1919] hover:text-[#8B0000] border border-[#AA1919] px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors"
@@ -271,11 +287,10 @@
               Lokasi Saya
             </button>
 
-            <!-- Tambah Ambulans - Always visible but conditionally interactive -->
             <a
               href="#"
               id="addAmbulansBtn"
-              class="location-button flex items-center text-[#AA1919] hover:text-[#8B0000] border border-[#AA1919] px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+              class="mr-5 md:m-0 location-button flex items-center text-[#AA1919] hover:text-[#8B0000] border border-[#AA1919] px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors"
               onclick="handleAddAmbulans(event)"
             >
               <i class="fas fa-plus mr-2"></i>
@@ -287,7 +302,7 @@
               <a
                 href="/login.html"
                 id="loginBtn"
-                class="flex items-center text-blue-600 hover:text-[#AA1919] transition-colors"
+                class="flex items-center text-blue-800 hover:text-[#AA1919] transition-colors text-sm md:text-base"
               >
                 <i class="fas fa-sign-in-alt mr-2"></i>
                 Masuk
@@ -303,12 +318,63 @@
               <button
                 id="logoutBtn"
                 style="display: none"
-                class="text-gray-600 hover:text-[#AA1919] transition-colors"
+                class="text-gray-600 flex items-center hover:text-[#AA1919] transition-colors"
               >
                 <i class="fas fa-sign-out-alt mr-2"></i>
                 Keluar
               </button>
             </div>
+          </div>
+        </div>
+
+        <!-- Mobile Menu (Dropdown) Improved -->
+        <div
+          id="mobileMenu"
+          class="md:hidden hidden flex-col gap-4 mt-4 bg-white p-4 rounded-xl shadow-lg border border-red-100"
+        >
+          <!-- Section: Actions -->
+          <div class="flex flex-col gap-3">
+            <button
+              class="flex items-center justify-center text-[#AA1919] border border-[#AA1919] px-4 py-2 rounded-lg font-medium hover:bg-[#fef2f2] transition-colors w-full"
+            >
+              <i class="fas fa-location-arrow mr-2 text-[#AA1919]"></i>
+              Lokasi Saya
+            </button>
+
+            <a
+              href="#"
+              class="flex items-center justify-center text-[#AA1919] border border-[#AA1919] px-4 py-2 rounded-lg font-medium hover:bg-[#fef2f2] transition-colors w-full"
+            >
+              <i class="fas fa-plus mr-2"></i>
+              Tambah Ambulans
+            </a>
+          </div>
+
+          <!-- Divider -->
+          <hr class="border-t border-gray-200 my-2" />
+
+          <!-- Section: Auth -->
+          <div class="flex flex-col gap-2 text-center">
+            <a
+              href="/login.html"
+              class="text-blue-800 hover:text-[#AA1919] transition-colors flex justify-center items-center"
+              id="mobileLoginBtn"
+            >
+              <i class="fas fa-sign-in-alt mr-2"></i> Masuk
+            </a>
+            <a
+              href="/register.html"
+              class="text-gray-600 hover:text-[#AA1919] transition-colors flex justify-center items-center"
+              id="mobileRegisterBtn"
+            >
+              <i class="fas fa-user-plus mr-2"></i> Daftar
+            </a>
+            <button
+              class="text-gray-600 hover:text-[#AA1919] transition-colors flex justify-center items-center"
+              id="mobileLogoutBtn"
+            >
+              <i class="fas fa-sign-out-alt mr-2"></i> Keluar
+            </button>
           </div>
         </div>
       </div>
@@ -317,30 +383,37 @@
     <!-- Hero Section -->
     <div class="gradient-bg shadow-lg overflow-hidden mb-8">
       <div
-        class="container mx-auto max-w-6xl flex flex-col md:flex-row items-center justify-between px-8 py-16"
+        class="container mx-auto max-w-6xl flex flex-col-reverse md:flex-row items-center justify-between px-6 sm:px-8 py-12 sm:py-16 gap-8"
       >
-        <div class="text-center md:text-left mb-8 md:mb-0 md:w-1/2">
-          <h1 class="text-xl md:text-3xl font-bold text-white mb-4">
+        <!-- Text Section -->
+        <div class="text-center md:text-left md:w-1/2">
+          <h1
+            class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 leading-tight"
+          >
             Temukan Ambulans Terdekat
           </h1>
-          <p class="text-gray-100 text-md mb-8">
+          <p
+            class="text-gray-100 text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed"
+          >
             AmbuLink membantu Anda menemukan layanan ambulans terdekat dengan
             cepat dan mudah. Bandingkan layanan, fasilitas, dan biaya untuk
             mendapatkan bantuan yang tepat.
           </p>
           <button
             onclick="window.location.href='#filter-pencarian'"
-            class="bg-white text-[#AA1919] px-8 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center mx-auto md:mx-0"
+            class="bg-white text-[#AA1919] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center mx-auto md:mx-0 w-full sm:w-auto"
           >
             <span>Mulai Pencarian</span>
             <i class="fas fa-arrow-right ml-2"></i>
           </button>
         </div>
+
+        <!-- Image Section -->
         <div class="flex justify-center md:w-1/2">
           <img
             src="images/img.png"
             alt="Ambulance illustration"
-            class="w-full max-w-md rounded-lg"
+            class="w-4/5 sm:w-full max-w-xs sm:max-w-md lg:max-w-lg rounded-xl"
           />
         </div>
       </div>
@@ -350,21 +423,22 @@
     <div class="container mx-auto px-4 py-8">
       <!-- Filter Section -->
       <div
-        class="bg-white rounded-xl shadow-lg p-6 mb-8 w-full"
+        class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-8 w-full"
         id="filter-pencarian"
       >
         <h3 class="text-xl font-semibold mb-6 text-gray-800 flex items-center">
           <i class="fas fa-filter mr-2 text-[#AA1919]"></i>
           Filter Pencarian
         </h3>
-        <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
-          <div class="group">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6">
+          <!-- Radius Pencarian -->
+          <div>
             <label class="block text-sm font-medium text-gray-700 mb-2"
               >Radius Pencarian</label
             >
             <select
               id="filterRadius"
-              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#AA1919] focus:ring focus:ring-[#AA1919] focus:ring-opacity-50 transition-all duration-300 hover:border-[#AA1919]"
+              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#AA1919] focus:ring focus:ring-[#AA1919]/50 hover:border-[#AA1919] transition duration-200"
             >
               <option value="0">Semua Jarak</option>
               <option value="1">1 km</option>
@@ -374,35 +448,41 @@
               <option value="25">25 km</option>
             </select>
           </div>
-          <div class="group">
+
+          <!-- Provinsi -->
+          <div>
             <label class="block text-sm font-medium text-gray-700 mb-2"
               >Provinsi</label
             >
             <select
               id="filterProvinsi"
-              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#AA1919] focus:ring focus:ring-[#AA1919] focus:ring-opacity-50 transition-all duration-300 hover:border-[#AA1919]"
+              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#AA1919] focus:ring focus:ring-[#AA1919]/50 hover:border-[#AA1919] transition duration-200"
             >
               <option value="">Semua Provinsi</option>
             </select>
           </div>
-          <div class="group">
+
+          <!-- Kota -->
+          <div>
             <label class="block text-sm font-medium text-gray-700 mb-2"
               >Kota</label
             >
             <select
               id="filterKota"
-              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#AA1919] focus:ring focus:ring-[#AA1919] focus:ring-opacity-50 transition-all duration-300 hover:border-[#AA1919]"
+              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#AA1919] focus:ring focus:ring-[#AA1919]/50 hover:border-[#AA1919] transition duration-200"
             >
               <option value="">Semua Kota</option>
             </select>
           </div>
-          <div class="group">
+
+          <!-- Tipe Instansi -->
+          <div>
             <label class="block text-sm font-medium text-gray-700 mb-2"
               >Tipe Instansi</label
             >
             <select
               id="filterTipe"
-              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#AA1919] focus:ring focus:ring-[#AA1919] focus:ring-opacity-50 transition-all duration-300 hover:border-[#AA1919]"
+              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#AA1919] focus:ring focus:ring-[#AA1919]/50 hover:border-[#AA1919] transition duration-200"
             >
               <option value="">Semua Tipe</option>
               <option value="rs">Rumah Sakit</option>
@@ -411,13 +491,15 @@
               <option value="lainnya">Lainnya</option>
             </select>
           </div>
-          <div class="group">
+
+          <!-- Jenis Layanan -->
+          <div>
             <label class="block text-sm font-medium text-gray-700 mb-2"
               >Jenis Layanan</label
             >
             <select
               id="filterJenisLayanan"
-              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#AA1919] focus:ring focus:ring-[#AA1919] focus:ring-opacity-50 transition-all duration-300 hover:border-[#AA1919]"
+              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#AA1919] focus:ring focus:ring-[#AA1919]/50 hover:border-[#AA1919] transition duration-200"
             >
               <option value="">Semua Layanan</option>
               <option value="gawat_darurat">Gawat Darurat</option>
@@ -426,13 +508,15 @@
               <option value="jenazah">Jenazah</option>
             </select>
           </div>
-          <div class="group">
+
+          <!-- Status Layanan -->
+          <div>
             <label class="block text-sm font-medium text-gray-700 mb-2"
               >Status Layanan</label
             >
             <select
               id="filterStatus"
-              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#AA1919] focus:ring focus:ring-[#AA1919] focus:ring-opacity-50 transition-all duration-300 hover:border-[#AA1919]"
+              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#AA1919] focus:ring focus:ring-[#AA1919]/50 hover:border-[#AA1919] transition duration-200"
             >
               <option value="">Semua Status</option>
               <option value="gratis">Gratis</option>
@@ -443,9 +527,9 @@
       </div>
 
       <!-- Content Section -->
-      <div class="flex flex-col md:flex-row gap-8 mb-16">
+      <div class="flex flex-wrap gap-8 mb-16">
         <!-- Map Section -->
-        <div class="md:w-2/3">
+        <div class="w-full md:flex-[2_1_0%] min-w-0">
           <div class="bg-white rounded-xl shadow-lg overflow-hidden">
             <div class="p-6">
               <div
@@ -458,7 +542,7 @@
         </div>
 
         <!-- Ambulance Cards Section -->
-        <div class="md:w-1/3">
+        <div class="w-full md:flex-[1_1_0%] min-w-0">
           <div class="bg-white rounded-xl shadow-lg p-6">
             <div
               id="ambulanceList"
@@ -475,15 +559,15 @@
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
       <!-- Add statistics section after filter section -->
-      <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-8">
         <h3 class="text-xl font-semibold mb-4 text-gray-800 flex items-center">
           <i class="fas fa-chart-bar mr-2 text-[#AA1919]"></i>
           Statistik & Rekomendasi
         </h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <!-- Statistik -->
-          <div class="col-span-2 grid grid-cols-2 gap-4">
-            <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-gray-50 p-4 rounded-lg h-full">
               <h4 class="font-semibold text-sm mb-2 text-[#AA1919]">
                 Distribusi Tipe Ambulans
               </h4>
@@ -491,7 +575,7 @@
                 <canvas id="ambulanceTypeChart"></canvas>
               </div>
             </div>
-            <div class="bg-gray-50 p-4 rounded-lg">
+            <div class="bg-gray-50 p-4 rounded-lg h-full">
               <h4 class="font-semibold text-sm mb-2 text-[#AA1919]">
                 Status Layanan Ambulans
               </h4>
@@ -500,146 +584,19 @@
               </div>
             </div>
           </div>
+
           <!-- Rekomendasi Terdekat -->
-          <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="bg-gray-50 p-4 rounded-lg h-full">
             <h4 class="font-semibold text-sm mb-2 text-[#AA1919]">
               Ambulans Terdekat
             </h4>
-            <div id="nearestAmbulance" class="h-[200px] overflow-y-auto pr-2">
+            <div
+              id="nearestAmbulance"
+              class="h-[200px] overflow-y-auto pr-2 space-y-2"
+            >
               <!-- Will be filled by JavaScript -->
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Ambulance Card Template -->
-      <template id="ambulanceCardTemplate">
-        <div
-          class="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow p-6"
-        >
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold text-gray-800"></h3>
-            <span
-              class="status-badge px-3 py-1 rounded-full text-sm font-medium"
-            ></span>
-          </div>
-          <div class="space-y-2">
-            <p class="text-sm text-gray-600 flex items-center">
-              <i class="fas fa-hospital mr-2"></i>
-              <span class="tipe"></span>
-            </p>
-            <p class="text-sm text-gray-600 flex items-center">
-              <i class="fas fa-map-marker-alt mr-2"></i>
-              <span class="alamat"></span>
-            </p>
-            <p class="text-sm text-gray-600 flex items-center">
-              <i class="fas fa-phone mr-2"></i>
-              <span class="kontak"></span>
-            </p>
-            <div class="fasilitas flex flex-wrap gap-2 mt-3">
-              <!-- Fasilitas badges will be inserted here -->
-            </div>
-          </div>
-        </div>
-      </template>
-
-      <!-- Review Modal -->
-      <div
-        id="reviewModal"
-        class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50"
-      >
-        <div class="bg-white rounded-lg p-6 w-full max-w-md">
-          <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold">Beri Review</h3>
-            <button
-              onclick="closeReviewModal()"
-              class="text-gray-500 hover:text-gray-700"
-            >
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-
-          <!-- Review List -->
-          <div id="reviewList" class="mb-6 max-h-60 overflow-y-auto">
-            <!-- Reviews will be populated here -->
-          </div>
-
-          <!-- Review Form -->
-          <form id="reviewForm" class="space-y-4">
-            <input type="hidden" id="reviewAmbulansId" />
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >Rating</label
-              >
-              <div class="flex space-x-2">
-                <button
-                  type="button"
-                  class="star-btn text-2xl text-gray-300 hover:text-yellow-400"
-                  data-rating="1"
-                >
-                  ★
-                </button>
-                <button
-                  type="button"
-                  class="star-btn text-2xl text-gray-300 hover:text-yellow-400"
-                  data-rating="2"
-                >
-                  ★
-                </button>
-                <button
-                  type="button"
-                  class="star-btn text-2xl text-gray-300 hover:text-yellow-400"
-                  data-rating="3"
-                >
-                  ★
-                </button>
-                <button
-                  type="button"
-                  class="star-btn text-2xl text-gray-300 hover:text-yellow-400"
-                  data-rating="4"
-                >
-                  ★
-                </button>
-                <button
-                  type="button"
-                  class="star-btn text-2xl text-gray-300 hover:text-yellow-400"
-                  data-rating="5"
-                >
-                  ★
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label
-                for="reviewKomentar"
-                class="block text-sm font-medium text-gray-700 mb-1"
-                >Komentar</label
-              >
-              <textarea
-                id="reviewKomentar"
-                rows="3"
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#AA1919] focus:ring focus:ring-[#AA1919] focus:ring-opacity-50"
-              ></textarea>
-            </div>
-
-            <div class="flex justify-end space-x-2">
-              <button
-                type="button"
-                onclick="closeReviewModal()"
-                class="px-4 py-2 text-gray-600 hover:text-gray-800"
-              >
-                Batal
-              </button>
-              <button
-                type="submit"
-                class="px-4 py-2 bg-[#AA1919] text-white rounded-lg hover:bg-[#8B0000]"
-              >
-                Kirim Review
-              </button>
-            </div>
-          </form>
         </div>
       </div>
 
@@ -666,6 +623,7 @@
         if (token) {
           isAuthenticated = true;
         }
+        updateUI();
 
         let map = null;
         let markers = [];
@@ -678,6 +636,13 @@
         let ambulanceTypeChart = null;
         let ambulanceStatusChart = null;
 
+        //navbar
+        const menuToggle = document.getElementById("menuToggle");
+        const mobileMenu = document.getElementById("mobileMenu");
+
+        menuToggle.addEventListener("click", () => {
+          mobileMenu.classList.toggle("hidden");
+        });
         // Custom icons
         const ambulanceIcon = L.icon({
           iconUrl:
@@ -693,26 +658,26 @@
         const userIcon = L.divIcon({
           className: "user-location-marker",
           html: `<div style="
-                width: 20px;
-                height: 20px;
-                background-color: #4A90E2;
-                border: 3px solid white;
-                border-radius: 50%;
-                box-shadow: 0 0 10px rgba(0,0,0,0.5);
-                position: relative;
-            ">
-                <div style="
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    width: 30px;
-                    height: 30px;
-                    background-color: rgba(74, 144, 226, 0.3);
-                    border-radius: 50%;
-                    animation: pulse 2s infinite;
-                "></div>
-            </div>`,
+                      width: 20px;
+                      height: 20px;
+                      background-color: #4A90E2;
+                      border: 3px solid white;
+                      border-radius: 50%;
+                      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+                      position: relative;
+                  ">
+                      <div style="
+                          position: absolute;
+                          top: 50%;
+                          left: 50%;
+                          transform: translate(-50%, -50%);
+                          width: 30px;
+                          height: 30px;
+                          background-color: rgba(74, 144, 226, 0.3);
+                          border-radius: 50%;
+                          animation: pulse 2s infinite;
+                      "></div>
+                  </div>`,
           iconSize: [20, 20],
           iconAnchor: [10, 10],
         });
@@ -720,17 +685,17 @@
         // Add pulse animation style
         const style = document.createElement("style");
         style.textContent = `
-            @keyframes pulse {
-                0% {
-                    transform: translate(-50%, -50%) scale(1);
-                    opacity: 1;
-                }
-                100% {
-                    transform: translate(-50%, -50%) scale(3);
-                    opacity: 0;
-                }
-            }
-        `;
+                  @keyframes pulse {
+                      0% {
+                          transform: translate(-50%, -50%) scale(1);
+                          opacity: 1;
+                      }
+                      100% {
+                          transform: translate(-50%, -50%) scale(3);
+                          opacity: 0;
+                      }
+                  }
+              `;
         document.head.appendChild(style);
 
         // Initialize map and load data
@@ -747,28 +712,61 @@
           const loginBtn = document.getElementById("loginBtn");
           const registerBtn = document.getElementById("registerBtn");
           const logoutBtn = document.getElementById("logoutBtn");
+
+          const mobileLoginBtn = document.getElementById("mobileLoginBtn");
+          const mobileRegisterBtn =
+            document.getElementById("mobileRegisterBtn");
+          const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
+
           const addAmbulansBtn = document.getElementById("addAmbulansBtn");
 
           if (isAuthenticated) {
-            // After login: Enable Tambah Ambulans and show Logout
-            loginBtn.style.display = "none";
-            registerBtn.style.display = "none";
-            logoutBtn.style.display = "flex";
+            // Desktop
+            if (loginBtn) loginBtn.style.display = "none";
+            if (registerBtn) registerBtn.style.display = "none";
+            if (logoutBtn) logoutBtn.style.display = "flex";
+
+            // Mobile
+            if (mobileLoginBtn) mobileLoginBtn.style.display = "none";
+            if (mobileRegisterBtn) mobileRegisterBtn.style.display = "none";
+            if (mobileLogoutBtn) mobileLogoutBtn.style.display = "flex";
+
+            // Enable Add Ambulans
             addAmbulansBtn.onclick = () =>
               (window.location.href = "/tambah.html");
           } else {
-            // Before login: Show login/register buttons and disable Tambah Ambulans
-            loginBtn.style.display = "flex";
-            registerBtn.style.display = "flex";
-            logoutBtn.style.display = "none";
+            // Desktop
+            if (loginBtn) loginBtn.style.display = "flex";
+            if (registerBtn) registerBtn.style.display = "flex";
+            if (logoutBtn) logoutBtn.style.display = "none";
+
+            // Mobile
+            if (mobileLoginBtn) mobileLoginBtn.style.display = "flex";
+            if (mobileRegisterBtn) mobileRegisterBtn.style.display = "flex";
+            if (mobileLogoutBtn) mobileLogoutBtn.style.display = "none";
+
+            // Disable Add Ambulans
             addAmbulansBtn.onclick = (e) => {
               e.preventDefault();
               alert(
                 "Anda harus login terlebih dahulu untuk menambah ambulans."
               );
-              return false;
             };
           }
+        }
+
+        document
+          .getElementById("logoutBtn")
+          ?.addEventListener("click", handleLogout);
+        document
+          .getElementById("mobileLogoutBtn")
+          ?.addEventListener("click", handleLogout);
+
+        function handleLogout() {
+          localStorage.removeItem("token");
+          isAuthenticated = false;
+          updateUI();
+          showToast("Berhasil logout", "success");
         }
 
         // Function to handle Add Ambulans button click
@@ -804,12 +802,13 @@
         });
 
         // Logout button click handler
-        document.getElementById("logoutBtn")?.addEventListener("click", () => {
-          localStorage.removeItem("token");
-          isAuthenticated = false;
-          updateUI();
-          showToast("Berhasil logout", "success");
-        });
+        
+        //document.getElementById("logoutBtn")?.addEventListener("click", () => {
+          //localStorage.removeItem("token");
+          //isAuthenticated = false;
+          //updateUI();
+          //showToast("Berhasil logout", "success");
+        //});
 
         // Initialize map
         function initMap() {
@@ -1260,36 +1259,38 @@
             nearestContainer.innerHTML = nearestAmbulances
               .map(
                 (ambulance) => `
-                    <div class="bg-white rounded-lg shadow p-4 mb-4 hover:shadow-lg transition-shadow">
-                        <div class="flex justify-between items-start">
-                            <h4 class="font-semibold text-gray-800">${
-                              ambulance.nama
-                            }</h4>
-                            <span class="text-sm ${
-                              ambulance.status === "gratis"
-                                ? "text-green-600"
-                                : "text-gray-600"
-                            }">
-                                ${ambulance.status.toUpperCase()}
-                            </span>
-                        </div>
-                        <p class="text-sm text-gray-600 mt-1">
-                            <i class="fas fa-map-marker-alt text-red-500 mr-1"></i>
-                            ${ambulance.alamat}
-                        </p>
-                        <p class="text-sm text-gray-600 mt-1">
-                            <i class="fas fa-road text-blue-500 mr-1"></i>
-                            Jarak: ${ambulance.distance.toFixed(1)} km
-                        </p>
-                        <button onclick="getRoute([${ambulance.latitude}, ${
+                          <div class="bg-white rounded-lg shadow p-4 mb-4 hover:shadow-lg transition-shadow">
+                              <div class="flex justify-between items-start">
+                                  <h4 class="font-semibold text-gray-800">${
+                                    ambulance.nama
+                                  }</h4>
+                                  <span class="text-sm ${
+                                    ambulance.status === "gratis"
+                                      ? "text-green-600"
+                                      : "text-gray-600"
+                                  }">
+                                      ${ambulance.status.toUpperCase()}
+                                  </span>
+                              </div>
+                              <p class="text-sm text-gray-600 mt-1">
+                                  <i class="fas fa-map-marker-alt text-red-500 mr-1"></i>
+                                  ${ambulance.alamat}
+                              </p>
+                              <p class="text-sm text-gray-600 mt-1">
+                                  <i class="fas fa-road text-blue-500 mr-1"></i>
+                                  Jarak: ${ambulance.distance.toFixed(1)} km
+                              </p>
+                              <button onclick="getRoute([${
+                                ambulance.latitude
+                              }, ${
                   ambulance.longitude
-                }], '${ambulance.nama.replace(/'/g, "\\'")}')" 
-                                class="mt-2 w-full bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 transition-colors">
-                            <i class="fas fa-directions mr-1"></i>
-                            Lihat Rute
-                        </button>
-                    </div>
-                `
+                }], '${ambulance.nama.replace(/'/g, "\\'")}')"
+                                      class="mt-2 w-full bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 transition-colors">
+                                  <i class="fas fa-directions mr-1"></i>
+                                  Lihat Rute
+                              </button>
+                          </div>
+                      `
               )
               .join("");
           } catch (error) {
@@ -1341,170 +1342,172 @@
           const ratingStars =
             "★".repeat(Math.round(rating)) + "☆".repeat(5 - Math.round(rating));
           const ratingDisplay = `
-                <div class="flex items-center space-x-1">
-                    <div class="text-yellow-400 text-lg">${ratingStars}</div>
-                    <span class="text-gray-600">(${rating.toFixed(1)})</span>
-                    <span class="text-gray-400">${jumlahRating} review</span>
-                </div>
-            `;
+                      <div class="flex items-center space-x-1">
+                          <div class="text-yellow-400 text-lg">${ratingStars}</div>
+                          <span class="text-gray-600">(${rating.toFixed(
+                            1
+                          )})</span>
+                          <span class="text-gray-400">${jumlahRating} review</span>
+                      </div>
+                  `;
 
           card.innerHTML = `
-                <div class="flex justify-between items-start mb-4">
-                    <h3 class="text-xl font-bold text-gray-800">${
-                      ambulance.nama || ""
-                    }</h3>
-                        ${ratingDisplay}
-                    </div>
+                      <div class="flex justify-between items-start mb-4">
+                          <h3 class="text-xl font-bold text-gray-800">${
+                            ambulance.nama || ""
+                          }</h3>
+                              ${ratingDisplay}
+                          </div>
 
-                <!-- Tipe dan Status -->
-                <div class="flex items-center justify-between mb-4">
-                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                        ${getTipeInstansiLabel(ambulance.tipe_instansi)}
-                    </span>
-                    <span class="px-3 py-1 ${
-                      ambulance.status === "gratis"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-yellow-100 text-yellow-800"
-                    } rounded-full text-sm">
-                        ${
-                          ambulance.status === "gratis"
-                            ? "Gratis"
-                            : formatPrice(ambulance.harga || 0)
-                        }
-                    </span>
-                </div>
+                      <!-- Tipe dan Status -->
+                      <div class="flex items-center justify-between mb-4">
+                          <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                              ${getTipeInstansiLabel(ambulance.tipe_instansi)}
+                          </span>
+                          <span class="px-3 py-1 ${
+                            ambulance.status === "gratis"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          } rounded-full text-sm">
+                              ${
+                                ambulance.status === "gratis"
+                                  ? "Gratis"
+                                  : formatPrice(ambulance.harga || 0)
+                              }
+                          </span>
+                      </div>
 
-                <!-- Informasi Utama -->
-                <div class="space-y-3 mb-4">
-                    <div class="flex items-start">
-                        <i class="fas fa-map-marker-alt text-red-500 mt-1 w-5"></i>
-                        <span class="text-gray-600 flex-1">${
-                          ambulance.alamat || ""
-                        }, ${ambulance.kota || ""}, ${
+                      <!-- Informasi Utama -->
+                      <div class="space-y-3 mb-4">
+                          <div class="flex items-start">
+                              <i class="fas fa-map-marker-alt text-red-500 mt-1 w-5"></i>
+                              <span class="text-gray-600 flex-1">${
+                                ambulance.alamat || ""
+                              }, ${ambulance.kota || ""}, ${
             ambulance.provinsi || ""
           }</span>
-                    </div>
+                          </div>
 
-                    <div class="flex items-center">
-                        <i class="fas fa-ambulance text-blue-500 w-5"></i>
-                        <span class="text-gray-600">${getJenisLayananLabel(
-                          ambulance.jenis_layanan
-                        )}</span>
-                    </div>
+                          <div class="flex items-center">
+                              <i class="fas fa-ambulance text-blue-500 w-5"></i>
+                              <span class="text-gray-600">${getJenisLayananLabel(
+                                ambulance.jenis_layanan
+                              )}</span>
+                          </div>
 
-                    ${
-                      ambulance.jam_operasional
-                        ? `
-                    <div class="flex items-center">
-                        <i class="fas fa-clock text-blue-500 w-5"></i>
-                        <span class="text-gray-600">${ambulance.jam_operasional}</span>
-                    </div>
-                    `
-                        : ""
-                    }
+                          ${
+                            ambulance.jam_operasional
+                              ? `
+                          <div class="flex items-center">
+                              <i class="fas fa-clock text-blue-500 w-5"></i>
+                              <span class="text-gray-600">${ambulance.jam_operasional}</span>
+                          </div>
+                          `
+                              : ""
+                          }
 
-                    ${
-                      distance
-                        ? `
-                    <div class="flex items-center">
-                        <i class="fas fa-route text-green-500 w-5"></i>
-                        <span class="text-gray-600">${distance.toFixed(
-                          1
-                        )} km dari lokasi Anda</span>
-                    </div>
-                    `
-                        : ""
-                    }
-                </div>
+                          ${
+                            distance
+                              ? `
+                          <div class="flex items-center">
+                              <i class="fas fa-route text-green-500 w-5"></i>
+                              <span class="text-gray-600">${distance.toFixed(
+                                1
+                              )} km dari lokasi Anda</span>
+                          </div>
+                          `
+                              : ""
+                          }
+                      </div>
 
-                <!-- Kontak -->
-                <div class="grid grid-cols-2 gap-2 mb-4">
-                    <button href="tel:${ambulance.kontak}" 
-                       class="flex items-center justify-center bg-green-500 text-white px-3 py-2 rounded text-sm hover:bg-green-600 transition-colors">
-                        <i class="fas fa-phone mr-2"></i>
-                        ${ambulance.kontak}
-                </button>
-                    ${
-                      ambulance.whatsapp
-                        ? `
-                        <a href="https://wa.me/${ambulance.whatsapp.replace(
-                          /\D/g,
-                          ""
-                        )}" target="_blank" 
-                            class="flex items-center justify-center bg-[#25D366] text-white px-3 py-2 rounded text-sm hover:bg-[#128C7E] transition-colors">
-                            <i class="fab fa-whatsapp mr-2"></i>
-                            ${ambulance.whatsapp}
-                        </a>
-                    `
-                        : `
-                        <button disabled class="flex items-center justify-center bg-gray-300 text-white px-3 py-2 rounded text-sm cursor-not-allowed">
-                            <i class="fab fa-whatsapp mr-2"></i>
-                            Tidak tersedia
-                        </button>
-                    `
-                    }
-                </div>
+                      <!-- Kontak -->
+                      <div class="grid grid-cols-2 gap-2 mb-4">
+                          <button href="tel:${ambulance.kontak}"
+                             class="flex items-center justify-center bg-green-500 text-white px-3 py-2 rounded text-sm hover:bg-green-600 transition-colors">
+                              <i class="fas fa-phone mr-2"></i>
+                              ${ambulance.kontak}
+                      </button>
+                          ${
+                            ambulance.whatsapp
+                              ? `
+                              <a href="https://wa.me/${ambulance.whatsapp.replace(
+                                /\D/g,
+                                ""
+                              )}" target="_blank"
+                                  class="flex items-center justify-center bg-[#25D366] text-white px-3 py-2 rounded text-sm hover:bg-[#128C7E] transition-colors">
+                                  <i class="fab fa-whatsapp mr-2"></i>
+                                  ${ambulance.whatsapp}
+                              </a>
+                          `
+                              : `
+                              <button disabled class="flex items-center justify-center bg-gray-300 text-white px-3 py-2 rounded text-sm cursor-not-allowed">
+                                  <i class="fab fa-whatsapp mr-2"></i>
+                                  Tidak tersedia
+                              </button>
+                          `
+                          }
+                      </div>
 
-                <!-- Fasilitas -->
-                ${
-                  fasilitas.length > 0
-                    ? `
-                <div class="mb-4">
-                    <h4 class="font-medium text-gray-700 mb-2">Fasilitas:</h4>
-                    <div class="flex flex-wrap gap-2">
-                        ${fasilitas
-                          .map(
-                            (f) => `
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                <i class="fas fa-check-circle text-green-500 mr-1"></i>
-                                ${f}
-                            </span>
-                        `
-                          )
-                          .join("")}
-                    </div>
-                </div>
-                `
-                    : ""
-                }
+                      <!-- Fasilitas -->
+                      ${
+                        fasilitas.length > 0
+                          ? `
+                      <div class="mb-4">
+                          <h4 class="font-medium text-gray-700 mb-2">Fasilitas:</h4>
+                          <div class="flex flex-wrap gap-2">
+                              ${fasilitas
+                                .map(
+                                  (f) => `
+                                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                      <i class="fas fa-check-circle text-green-500 mr-1"></i>
+                                      ${f}
+                                  </span>
+                              `
+                                )
+                                .join("")}
+                          </div>
+                      </div>
+                      `
+                          : ""
+                      }
 
-                <!-- Deskripsi -->
-                ${
-                  ambulance.deskripsi
-                    ? `
-                <div class="mb-4">
-                    <h4 class="font-medium text-gray-700 mb-2">Deskripsi:</h4>
-                    <p class="text-gray-600 text-sm">${ambulance.deskripsi}</p>
-                </div>
-                `
-                    : ""
-                }
+                      <!-- Deskripsi -->
+                      ${
+                        ambulance.deskripsi
+                          ? `
+                      <div class="mb-4">
+                          <h4 class="font-medium text-gray-700 mb-2">Deskripsi:</h4>
+                          <p class="text-gray-600 text-sm">${ambulance.deskripsi}</p>
+                      </div>
+                      `
+                          : ""
+                      }
 
-                <!-- Action Buttons -->
-                <div class="grid grid-cols-2 gap-2">
-                    ${
-                      userLocation
-                        ? `
-                    <button onclick="getRoute([${ambulance.latitude}, ${
-                            ambulance.longitude
-                          }], '${ambulance.nama.replace(/'/g, "\\'")}')" 
-                            class="flex items-center justify-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
-                        <i class="fas fa-directions mr-2"></i>Lihat Rute
-                    </button>
-                    `
-                        : `
-                    <button onclick="getCurrentLocation()" 
-                            class="flex items-center justify-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
-                        <i class="fas fa-location-arrow mr-2"></i>Aktifkan Lokasi
-                    </button>
-                    `
-                    }
-                    <button onclick="showReviewModal(${ambulance.id})"
-                            class="flex items-center justify-center bg-gray-100 text-gray-700 px-4 py-2 rounded hover:bg-gray-200 transition-colors">
-                        <i class="fas fa-star mr-2"></i>Lihat Review
-                    </button>
-                </div>
-            `;
+                      <!-- Action Buttons -->
+                      <div class="grid grid-cols-2 gap-2">
+                          ${
+                            userLocation
+                              ? `
+                          <button onclick="getRoute([${ambulance.latitude}, ${
+                                  ambulance.longitude
+                                }], '${ambulance.nama.replace(/'/g, "\\'")}')"
+                                  class="flex items-center justify-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
+                              <i class="fas fa-directions mr-2"></i>Lihat Rute
+                          </button>
+                          `
+                              : `
+                          <button onclick="getCurrentLocation()"
+                                  class="flex items-center justify-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
+                              <i class="fas fa-location-arrow mr-2"></i>Aktifkan Lokasi
+                          </button>
+                          `
+                          }
+                          <button onclick="showReviewModal(${ambulance.id})"
+                                  class="flex items-center justify-center bg-gray-100 text-gray-700 px-4 py-2 rounded hover:bg-gray-200 transition-colors">
+                              <i class="fas fa-star mr-2"></i>Lihat Review
+                          </button>
+                      </div>
+                  `;
           return card;
         }
 
@@ -1527,100 +1530,100 @@
           const ratingDisplay =
             rating > 0
               ? `<div class="flex items-center text-yellow-400 mb-2">
-                    <span class="font-medium">${rating.toFixed(1)}</span>
-                    <i class="fas fa-star ml-1"></i>
-                    <span class="text-gray-500 ml-1">(${jumlahRating})</span>
-                </div>`
+                          <span class="font-medium">${rating.toFixed(1)}</span>
+                          <i class="fas fa-star ml-1"></i>
+                          <span class="text-gray-500 ml-1">(${jumlahRating})</span>
+                      </div>`
               : "";
 
           popupContent.innerHTML = `
-                <div class="text-lg font-bold mb-2">${ambulans.nama}</div>
-                ${ratingDisplay}
-                <div class="space-y-2 text-sm">
-                    <div class="flex items-center">
-                        <i class="fas fa-phone text-green-500 w-5"></i>
-                        <a href="tel:${
-                          ambulans.kontak
-                        }" class="hover:text-blue-500 ml-2">${
+                      <div class="text-lg font-bold mb-2">${ambulans.nama}</div>
+                      ${ratingDisplay}
+                      <div class="space-y-2 text-sm">
+                          <div class="flex items-center">
+                              <i class="fas fa-phone text-green-500 w-5"></i>
+                              <a href="tel:${
+                                ambulans.kontak
+                              }" class="hover:text-blue-500 ml-2">${
             ambulans.kontak
           }</a>
-                    </div>
-                    <div class="flex items-center">
-                        <i class="fab fa-whatsapp text-[#25D366] w-5"></i>
-                        ${
-                          ambulans.whatsapp
-                            ? `<a href="https://wa.me/${ambulans.whatsapp.replace(
-                                /\D/g,
-                                ""
-                              )}" target="_blank" 
-                                class="hover:text-blue-500 ml-2">
-                                ${ambulans.whatsapp}
-                            </a>`
-                            : `<span class="text-gray-500 ml-2">-</span>`
-                        }
-                    </div>
-                    <div class="flex items-center">
-                        <i class="fas fa-building text-blue-500 w-5"></i>
-                        <span class="ml-2">${
-                          getTipeInstansiLabel(ambulans.tipe_instansi) ||
-                          "Tidak tersedia"
-                        }</span>
-                    </div>
-                    <div class="flex items-center">
-                        <i class="fas fa-${
-                          ambulans.status === "gratis"
-                            ? "hand-holding-heart text-green-500"
-                            : "money-bill text-blue-500"
-                        } w-5"></i>
-                        <span class="ml-2">${
-                          ambulans.status === "gratis"
-                            ? "Gratis"
-                            : formatPrice(ambulans.harga || 0)
-                        }</span>
-                    </div>
-                    ${
-                      distance
-                        ? `
-                    <div class="flex items-center">
-                        <i class="fas fa-route text-blue-500 w-5"></i>
-                        <span class="ml-2">${distance} km dari lokasi Anda</span>
-                    </div>
-                    `
-                        : ""
-                    }
-                </div>
-                <div class="flex gap-2 mt-4">
-                    <a href="tel:${ambulans.kontak}" 
-                       class="text-href flex items-center justify-center bg-green-500 text-white px-3 py-2 rounded text-center hover:bg-green-600 transition-colors text-sm">
-                        <i class="fas fa-phone mr-2"></i>Telepon
-                    </a>
-                    ${
-                      ambulans.whatsapp
-                        ? `<a href="https://wa.me/${ambulans.whatsapp.replace(
-                            /\D/g,
-                            ""
-                          )}" target="_blank" 
-                            class="flex items-center justify-center bg-[#25D366] text-white px-3 py-2 rounded text-center hover:bg-[#128C7E] transition-colors text-sm">
-                            <i class="fab fa-whatsapp mr-2"></i>WhatsApp
-                        </a>`
-                        : `<button disabled class="flex items-center justify-center bg-gray-300 text-white px-3 py-2 rounded text-center cursor-not-allowed text-sm">
-                            <i class="fab fa-whatsapp mr-2"></i>WhatsApp
-                        </button>`
-                    }
-                </div>
-                ${
-                  userLocation
-                    ? `
-                <button onclick="getRoute([${ambulans.latitude}, ${
-                        ambulans.longitude
-                      }], '${ambulans.nama.replace(/'/g, "\\'")}')" 
-                        class="w-full mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors text-sm">
-                    <i class="fas fa-directions mr-2"></i>Lihat Rute
-                </button>
-                `
-                    : ""
-                }
-            `;
+                          </div>
+                          <div class="flex items-center">
+                              <i class="fab fa-whatsapp text-[#25D366] w-5"></i>
+                              ${
+                                ambulans.whatsapp
+                                  ? `<a href="https://wa.me/${ambulans.whatsapp.replace(
+                                      /\D/g,
+                                      ""
+                                    )}" target="_blank"
+                                      class="hover:text-blue-500 ml-2">
+                                      ${ambulans.whatsapp}
+                                  </a>`
+                                  : `<span class="text-gray-500 ml-2">-</span>`
+                              }
+                          </div>
+                          <div class="flex items-center">
+                              <i class="fas fa-building text-blue-500 w-5"></i>
+                              <span class="ml-2">${
+                                getTipeInstansiLabel(ambulans.tipe_instansi) ||
+                                "Tidak tersedia"
+                              }</span>
+                          </div>
+                          <div class="flex items-center">
+                              <i class="fas fa-${
+                                ambulans.status === "gratis"
+                                  ? "hand-holding-heart text-green-500"
+                                  : "money-bill text-blue-500"
+                              } w-5"></i>
+                              <span class="ml-2">${
+                                ambulans.status === "gratis"
+                                  ? "Gratis"
+                                  : formatPrice(ambulans.harga || 0)
+                              }</span>
+                          </div>
+                          ${
+                            distance
+                              ? `
+                          <div class="flex items-center">
+                              <i class="fas fa-route text-blue-500 w-5"></i>
+                              <span class="ml-2">${distance} km dari lokasi Anda</span>
+                          </div>
+                          `
+                              : ""
+                          }
+                      </div>
+                      <div class="flex gap-2 mt-4">
+                          <a href="tel:${ambulans.kontak}"
+                             class="text-href flex items-center justify-center bg-green-500 text-white px-3 py-2 rounded text-center hover:bg-green-600 transition-colors text-sm">
+                              <i class="fas fa-phone mr-2"></i>Telepon
+                          </a>
+                          ${
+                            ambulans.whatsapp
+                              ? `<a href="https://wa.me/${ambulans.whatsapp.replace(
+                                  /\D/g,
+                                  ""
+                                )}" target="_blank"
+                                  class="flex items-center justify-center bg-[#25D366] text-white px-3 py-2 rounded text-center hover:bg-[#128C7E] transition-colors text-sm">
+                                  <i class="fab fa-whatsapp mr-2"></i>WhatsApp
+                              </a>`
+                              : `<button disabled class="flex items-center justify-center bg-gray-300 text-white px-3 py-2 rounded text-center cursor-not-allowed text-sm">
+                                  <i class="fab fa-whatsapp mr-2"></i>WhatsApp
+                              </button>`
+                          }
+                      </div>
+                      ${
+                        userLocation
+                          ? `
+                      <button onclick="getRoute([${ambulans.latitude}, ${
+                              ambulans.longitude
+                            }], '${ambulans.nama.replace(/'/g, "\\'")}')"
+                              class="w-full mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors text-sm">
+                          <i class="fas fa-directions mr-2"></i>Lihat Rute
+                      </button>
+                      `
+                          : ""
+                      }
+                  `;
 
           return popupContent;
         }
@@ -1708,10 +1711,10 @@
 
           if (filteredData.length === 0) {
             container.innerHTML = `
-                    <div class="col-span-3 text-center py-8">
-                        <p class="text-gray-500">Tidak ada ambulans yang sesuai dengan filter yang dipilih</p>
-                    </div>
-                `;
+                          <div class="col-span-3 text-center py-8">
+                              <p class="text-gray-500">Tidak ada ambulans yang sesuai dengan filter yang dipilih</p>
+                          </div>
+                      `;
             return;
           }
 
@@ -1734,147 +1737,154 @@
               : [];
 
             card.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-800">${
-                              ambulance.nama
-                            }</h3>
-                            <p class="text-sm text-gray-500">${getTipeInstansiLabel(
-                              ambulance.tipe_instansi
-                            )}</p>
-                    </div>
-                        <div class="text-right">
-                            <span class="inline-block px-2 py-1 text-sm ${
-                              ambulance.status === "gratis"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-blue-100 text-blue-800"
-                            } rounded-full font-medium">
-                                ${
-                                  ambulance.status === "gratis"
-                                    ? "GRATIS"
-                                    : formatPrice(ambulance.harga || 0)
-                                }
-                            </span>
-                        </div>
-                    </div>
+                          <div class="flex justify-between items-start">
+                              <div>
+                                  <h3 class="text-lg font-semibold text-gray-800">${
+                                    ambulance.nama
+                                  }</h3>
+                                  <p class="text-sm text-gray-500">${getTipeInstansiLabel(
+                                    ambulance.tipe_instansi
+                                  )}</p>
+                          </div>
+                              <div class="text-right">
+                                  <span class="inline-block px-2 py-1 text-sm ${
+                                    ambulance.status === "gratis"
+                                      ? "bg-green-100 text-green-800"
+                                      : "bg-blue-100 text-blue-800"
+                                  } rounded-full font-medium">
+                                      ${
+                                        ambulance.status === "gratis"
+                                          ? "GRATIS"
+                                          : formatPrice(ambulance.harga || 0)
+                                      }
+                                  </span>
+                              </div>
+                          </div>
 
-                    <!-- Rating & Reviews -->
-                    <div class="mt-2 flex items-center space-x-2">
-                        <div class="text-yellow-400">${ratingStars}</div>
-                        <span class="text-sm text-gray-600">${rating.toFixed(
-                          1
-                        )}</span>
-                        <span class="text-sm text-gray-400">(${
-                          ambulance.jumlah_rating || 0
-                        } ulasan)</span>
-                    </div>
+                          <!-- Rating & Reviews -->
+                          <div class="mt-2 flex items-center space-x-2">
+                              <div class="text-yellow-400">${ratingStars}</div>
+                              <span class="text-sm text-gray-600">${rating.toFixed(
+                                1
+                              )}</span>
+                              <span class="text-sm text-gray-400">(${
+                                ambulance.jumlah_rating || 0
+                              } ulasan)</span>
+                          </div>
 
-                    <!-- Alamat & Kontak -->
-                    <div class="mt-3 space-y-2">
-                        <div class="flex items-start space-x-2">
-                            <i class="fas fa-map-marker-alt text-red-500 mt-1"></i>
-                            <p class="text-sm text-gray-600 flex-1">${
-                              ambulance.alamat
-                            }, ${ambulance.kota}, ${ambulance.provinsi}</p>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <i class="fas fa-phone text-green-500"></i>
-                            <a href="tel:${
-                              ambulance.kontak
-                            }" class="text-sm text-gray-600" hover:text-blue-800">${
+                          <!-- Alamat & Kontak -->
+                          <div class="mt-3 space-y-2">
+                              <div class="flex items-start space-x-2">
+                                  <i class="fas fa-map-marker-alt text-red-500 mt-1"></i>
+                                  <p class="text-sm text-gray-600 flex-1">${
+                                    ambulance.alamat
+                                  }, ${ambulance.kota}, ${
+              ambulance.provinsi
+            }</p>
+                              </div>
+                              <div class="flex items-center space-x-2">
+                                  <i class="fas fa-phone text-green-500"></i>
+                                  <a href="tel:${
+                                    ambulance.kontak
+                                  }" class="text-sm text-gray-600" hover:text-blue-800">${
               ambulance.kontak
             }</a>
-                        </div>
-                        ${
-                          ambulance.whatsapp
-                            ? `
-                        <div class="flex items-center space-x-2">
-                            <i class="fab fa-whatsapp text-green-500"></i>
-                            <a href="https://wa.me/${ambulance.whatsapp.replace(
-                              /\D/g,
-                              ""
-                            )}" class="text-sm text-gray-600" hover:text-blue-800">${
+                              </div>
+                              ${
                                 ambulance.whatsapp
-                              }</a>
-                        </div>
-                        `
-                            : ""
-                        }
-                    </div>
+                                  ? `
+                              <div class="flex items-center space-x-2">
+                                  <i class="fab fa-whatsapp text-green-500"></i>
+                                  <a href="https://wa.me/${ambulance.whatsapp.replace(
+                                    /\D/g,
+                                    ""
+                                  )}" class="text-sm text-gray-600" hover:text-blue-800">${
+                                      ambulance.whatsapp
+                                    }</a>
+                              </div>
+                              `
+                                  : ""
+                              }
+                          </div>
 
-                    <!-- Jenis Layanan & Jam Operasional -->
-                    <div class="mt-3 space-y-2">
-                        <div class="flex items-center space-x-2">
-                            <i class="fas fa-ambulance text-[#AA1919]"></i>
-                            <span class="text-sm text-gray-600">${getJenisLayananLabel(
-                              ambulance.jenis_layanan
-                            )}</span>
-                        </div>
-                        ${
-                          ambulance.jam_operasional
-                            ? `
-                        <div class="flex items-center space-x-2">
-                            <i class="fas fa-clock text-[#AA1919]"></i>
-                            <span class="text-sm text-gray-600">${ambulance.jam_operasional}</span>
-                        </div>
-                        `
-                            : ""
-                        }
-                    </div>
+                          <!-- Jenis Layanan & Jam Operasional -->
+                          <div class="mt-3 space-y-2">
+                              <div class="flex items-center space-x-2">
+                                  <i class="fas fa-ambulance text-[#AA1919]"></i>
+                                  <span class="text-sm text-gray-600">${getJenisLayananLabel(
+                                    ambulance.jenis_layanan
+                                  )}</span>
+                              </div>
+                              ${
+                                ambulance.jam_operasional
+                                  ? `
+                              <div class="flex items-center space-x-2">
+                                  <i class="fas fa-clock text-[#AA1919]"></i>
+                                  <span class="text-sm text-gray-600">${ambulance.jam_operasional}</span>
+                              </div>
+                              `
+                                  : ""
+                              }
+                          </div>
 
-                    <!-- Fasilitas -->
-                    ${
-                      fasilitas.length > 0
-                        ? `
-                    <div class="mt-3">
-                        <div class="flex flex-wrap gap-1">
-                            ${fasilitas
-                              .map(
-                                (f) => `
-                                <span class="inline-flex items-center px-2 py-1 bg-gray-100 text-xs text-gray-800 rounded-full">
-                                    ${f}
-                                </span>
-                            `
-                              )
-                              .join("")}
-                        </div>
-                    </div>
-                    `
-                        : ""
-                    }
+                          <!-- Fasilitas -->
+                          ${
+                            fasilitas.length > 0
+                              ? `
+                          <div class="mt-3">
+                              <div class="flex flex-wrap gap-1">
+                                  ${fasilitas
+                                    .map(
+                                      (f) => `
+                                      <span class="inline-flex items-center px-2 py-1 bg-gray-100 text-xs text-gray-800 rounded-full">
+                                          ${f}
+                                      </span>
+                                  `
+                                    )
+                                    .join("")}
+                              </div>
+                          </div>
+                          `
+                              : ""
+                          }
 
-                    <!-- Action Buttons -->
-                    <div class="mt-4 grid grid-cols-2 gap-2">
-                        <button onclick="showReviewModal(${ambulance.id})" 
-                                class="flex items-center justify-center px-3 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors text-sm">
-                            <i class="fas fa-star mr-2"></i>
-                            ${
-                              ambulance.jumlah_rating > 0
-                                ? "Lihat Review"
-                                : "Beri Review"
-                            }
-                        </button>
-                        ${
-                          userLocation
-                            ? `
-                            <button onclick="getRoute([${ambulance.latitude}, ${
-                                ambulance.longitude
-                              }], '${ambulance.nama.replace(/'/g, "\\'")}')"
-                                    class="flex items-center justify-center px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm">
-                                <i class="fas fa-directions mr-2"></i>
-                                Lihat Rute
-                            </button>
-                        `
-                            : `
-                            <button onclick="getCurrentLocation()"
-                                    class="flex items-center justify-center px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm">
-                                <i class="fas fa-location-arrow mr-2"></i>
-                                Aktifkan Lokasi
-                            </button>
-                        `
-                        }
-                    </div>
-                `;
+                          <!-- Action Buttons -->
+                          <div class="mt-4 grid grid-cols-2 gap-2">
+                              <button onclick="showReviewModal(${ambulance.id})"
+                                      class="flex items-center justify-center px-3 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors text-sm">
+                                  <i class="fas fa-star mr-2"></i>
+                                  ${
+                                    ambulance.jumlah_rating > 0
+                                      ? "Lihat Review"
+                                      : "Beri Review"
+                                  }
+                              </button>
+                              ${
+                                userLocation
+                                  ? `
+                                  <button onclick="getRoute([${
+                                    ambulance.latitude
+                                  }, ${
+                                      ambulance.longitude
+                                    }], '${ambulance.nama.replace(
+                                      /'/g,
+                                      "\\'"
+                                    )}')"
+                                          class="flex items-center justify-center px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm">
+                                      <i class="fas fa-directions mr-2"></i>
+                                      Lihat Rute
+                                  </button>
+                              `
+                                  : `
+                                  <button onclick="getCurrentLocation()"
+                                          class="flex items-center justify-center px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm">
+                                      <i class="fas fa-location-arrow mr-2"></i>
+                                      Aktifkan Lokasi
+                                  </button>
+                              `
+                              }
+                          </div>
+                      `;
 
             container.appendChild(card);
           });
@@ -2189,18 +2199,18 @@
               reviewList.innerHTML = data
                 .map(
                   (review) => `
-          <div class="mb-4 border-b pb-2">
-            <div class="flex items-center justify-between">
-              <strong>${review.nama}</strong>
-              <span class="text-yellow-400">${"★".repeat(
-                review.rating
-              )}${"☆".repeat(5 - review.rating)}</span>
-            </div>
-            <p class="text-sm text-gray-600">${
-              review.komentar || "(tanpa komentar)"
-            }</p>
-          </div>
-        `
+                <div class="mb-4 border-b pb-2">
+                  <div class="flex items-center justify-between">
+                    <strong>${review.nama}</strong>
+                    <span class="text-yellow-400">${"★".repeat(
+                      review.rating
+                    )}${"☆".repeat(5 - review.rating)}</span>
+                  </div>
+                  <p class="text-sm text-gray-600">${
+                    review.komentar || "(tanpa komentar)"
+                  }</p>
+                </div>
+              `
                 )
                 .join("");
             }
@@ -2435,9 +2445,14 @@
         }
 
         // Check authentication on page load
-        document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", async () => {
           const token = localStorage.getItem("token");
           isAuthenticated = !!token;
+
+          initMap();
+          await loadAmbulanceData();
+          await getCurrentLocation();
+          setupEventListeners();
           updateUI();
         });
 
@@ -2473,71 +2488,64 @@
     >
       <div class="container mx-auto px-4 py-12">
         <div
-          class="grid items-start justify-center grid-cols-1 md:grid-cols-4 gap-8 mb-8"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10"
         >
+          <!-- Brand Info -->
           <div class="space-y-4">
             <div class="flex items-center mb-4">
-              <i class="fas fa-ambulance text-2xl text-[#fff]"></i>
-              <span class="text-2xl font-bold text-[#fff]">AmbuLink</span>
+              <i class="fas fa-ambulance text-2xl text-white"></i>
+              <span class="text-2xl font-bold text-white ml-2">AmbuLink</span>
             </div>
-            <p class="text-sm">
+            <p class="text-sm leading-relaxed">
               Menghubungkan Anda dengan layanan ambulans terdekat secara cepat
               dan efisien.
             </p>
           </div>
 
+          <!-- Kontak -->
           <div class="space-y-4">
-            <h4 class="text-xl font-bold">Kontak</h4>
-            <ul class="space-y-2">
+            <h4 class="text-lg sm:text-xl font-bold">Kontak</h4>
+            <ul class="space-y-2 text-sm">
               <li class="flex items-center">
                 <i class="fas fa-phone mr-2"></i>
-                <span>Emergency: 119</span>
+                Emergency: 119
               </li>
               <li class="flex items-center">
                 <i class="fas fa-envelope mr-2"></i>
-                <span>info@ambulink.id</span>
+                info@ambulink.id
               </li>
               <li class="flex items-center">
                 <i class="fas fa-map-marker-alt mr-2"></i>
-                <span>Jakarta, Indonesia</span>
+                Jakarta, Indonesia
               </li>
             </ul>
           </div>
 
+          <!-- Sosial Media -->
           <div class="space-y-4">
-            <h4 class="text-xl font-bold">Ikuti Kami</h4>
-            <div class="flex space-x-4">
-              <a
-                href="#"
-                class="hover:text-red-200 transition-colors duration-300"
-              >
+            <h4 class="text-lg sm:text-xl font-bold">Ikuti Kami</h4>
+            <div class="flex space-x-4 text-white">
+              <a href="#" class="hover:text-red-200 transition-colors">
                 <i class="fab fa-facebook-f text-xl"></i>
               </a>
-              <a
-                href="#"
-                class="hover:text-red-200 transition-colors duration-300"
-              >
+              <a href="#" class="hover:text-red-200 transition-colors">
                 <i class="fab fa-twitter text-xl"></i>
               </a>
-              <a
-                href="#"
-                class="hover:text-red-200 transition-colors duration-300"
-              >
+              <a href="#" class="hover:text-red-200 transition-colors">
                 <i class="fab fa-instagram text-xl"></i>
               </a>
-              <a
-                href="#"
-                class="hover:text-red-200 transition-colors duration-300"
-              >
+              <a href="#" class="hover:text-red-200 transition-colors">
                 <i class="fab fa-youtube text-xl"></i>
               </a>
             </div>
           </div>
+
+          <!-- Survei -->
           <div class="space-y-4">
-            <h5 class="text-lg font-semibold mb-2">Survei Kepuasan</h5>
+            <h5 class="text-lg font-semibold">Survei Kepuasan</h5>
             <a
               href="#"
-              class="inline-block bg-white text-[#AA1919] px-4 py-2 rounded-lg hover:bg-red-100 transition-colors duration-300"
+              class="inline-block bg-white text-[#AA1919] px-4 py-2 rounded-lg hover:bg-red-100 transition-colors duration-300 text-sm font-medium"
             >
               Beri Feedback
             </a>
