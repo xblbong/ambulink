@@ -1,138 +1,316 @@
-[
-  {
-    "name": "Aceh",
-    "cities": ["Banda Aceh", "Langsa", "Lhokseumawe", "Sabang", "Subulussalam"]
-  },
-  {
-    "name": "Sumatera Utara",
-    "cities": ["Medan", "Binjai", "Padang Sidempuan", "Pematangsiantar", "Sibolga", "Tanjungbalai", "Tebing Tinggi"]
-  },
-  {
-    "name": "Sumatera Barat",
-    "cities": ["Padang", "Bukittinggi", "Padangpanjang", "Payakumbuh", "Sawahlunto", "Solok"]
-  },
-  {
-    "name": "Riau",
-    "cities": ["Pekanbaru", "Dumai", "Bengkalis", "Siak", "Kampar"]
-  },
-  {
-    "name": "Kepulauan Riau",
-    "cities": ["Tanjung Pinang", "Batam", "Bintan", "Karimun"]
-  },
-  {
-    "name": "Jambi",
-    "cities": ["Jambi", "Sungai Penuh", "Muaro Jambi", "Kerinci"]
-  },
-  {
-    "name": "Sumatera Selatan",
-    "cities": ["Palembang", "Lubuklinggau", "Pagar Alam", "Prabumulih"]
-  },
-  {
-    "name": "Bangka Belitung",
-    "cities": ["Pangkal Pinang", "Belitung", "Bangka"]
-  },
-  {
-    "name": "Bengkulu",
-    "cities": ["Bengkulu", "Rejang Lebong", "Kepahiang"]
-  },
-  {
-    "name": "Lampung",
-    "cities": ["Bandar Lampung", "Metro", "Lampung Selatan", "Lampung Tengah"]
-  },
-  {
-    "name": "DKI Jakarta",
-    "cities": ["Jakarta Pusat", "Jakarta Utara", "Jakarta Barat", "Jakarta Selatan", "Jakarta Timur"]
-  },
-  {
-    "name": "Banten",
-    "cities": ["Serang", "Cilegon", "Tangerang", "Tangerang Selatan"]
-  },
-  {
-    "name": "Jawa Barat",
-    "cities": ["Bandung", "Bekasi", "Bogor", "Cimahi", "Cirebon", "Depok", "Sukabumi", "Tasikmalaya", "Banjar"]
-  },
-  {
-    "name": "Jawa Tengah",
-    "cities": ["Semarang", "Magelang", "Pekalongan", "Purwokerto", "Salatiga", "Surakarta", "Tegal"]
-  },
-  {
-    "name": "DI Yogyakarta",
-    "cities": ["Yogyakarta", "Bantul", "Sleman", "Kulon Progo", "Gunung Kidul"]
-  },
-  {
-    "name": "Jawa Timur",
-    "cities": ["Surabaya", "Batu", "Blitar", "Kediri", "Madiun", "Malang", "Mojokerto", "Pasuruan", "Probolinggo"]
-  },
-  {
-    "name": "Bali",
-    "cities": ["Denpasar", "Singaraja", "Negara", "Amlapura", "Gianyar", "Tabanan"]
-  },
-  {
-    "name": "Nusa Tenggara Barat",
-    "cities": ["Mataram", "Bima", "Dompu", "Sumbawa Besar"]
-  },
-  {
-    "name": "Nusa Tenggara Timur",
-    "cities": ["Kupang", "Ende", "Maumere", "Labuan Bajo"]
-  },
-  {
-    "name": "Kalimantan Barat",
-    "cities": ["Pontianak", "Singkawang", "Ketapang", "Sintang"]
-  },
-  {
-    "name": "Kalimantan Tengah",
-    "cities": ["Palangka Raya", "Sampit", "Pangkalan Bun"]
-  },
-  {
-    "name": "Kalimantan Selatan",
-    "cities": ["Banjarmasin", "Banjarbaru", "Martapura"]
-  },
-  {
-    "name": "Kalimantan Timur",
-    "cities": ["Samarinda", "Balikpapan", "Bontang", "Tenggarong"]
-  },
-  {
-    "name": "Kalimantan Utara",
-    "cities": ["Tanjung Selor", "Tarakan", "Malinau", "Nunukan"]
-  },
-  {
-    "name": "Sulawesi Utara",
-    "cities": ["Manado", "Bitung", "Tomohon", "Kotamobagu"]
-  },
-  {
-    "name": "Gorontalo",
-    "cities": ["Gorontalo", "Limboto", "Marisa"]
-  },
-  {
-    "name": "Sulawesi Tengah",
-    "cities": ["Palu", "Luwuk", "Toli-Toli", "Poso"]
-  },
-  {
-    "name": "Sulawesi Barat",
-    "cities": ["Mamuju", "Majene", "Polewali Mandar"]
-  },
-  {
-    "name": "Sulawesi Selatan",
-    "cities": ["Makassar", "Palopo", "Parepare", "Watampone"]
-  },
-  {
-    "name": "Sulawesi Tenggara",
-    "cities": ["Kendari", "Baubau", "Kolaka", "Raha"]
-  },
-  {
-    "name": "Maluku",
-    "cities": ["Ambon", "Tual", "Masohi", "Namlea"]
-  },
-  {
-    "name": "Maluku Utara",
-    "cities": ["Ternate", "Tidore", "Sofifi", "Jailolo"]
-  },
-  {
-    "name": "Papua",
-    "cities": ["Jayapura", "Merauke", "Timika", "Nabire"]
-  },
-  {
-    "name": "Papua Barat",
-    "cities": ["Manokwari", "Sorong", "Fakfak", "Kaimana"]
-  }
-] 
+ {
+  "Aceh": [
+    "Banda Aceh",
+    "Sabang",
+    "Lhokseumawe",
+    "Langsa",
+    "Subulussalam",
+    "Aceh Besar",
+    "Pidie",
+    "Aceh Utara"
+  ],
+  "Sumatera Utara": [
+    "Medan",
+    "Binjai",
+    "Pematang Siantar",
+    "Tebing Tinggi",
+    "Tanjung Balai",
+    "Deli Serdang",
+    "Karo",
+    "Simalungun"
+  ],
+  "Sumatera Barat": [
+    "Padang",
+    "Bukittinggi",
+    "Padang Panjang",
+    "Solok",
+    "Sawahlunto",
+    "Pariaman",
+    "Agam",
+    "Tanah Datar"
+  ],
+  "Riau": [
+    "Pekanbaru",
+    "Dumai",
+    "Siak",
+    "Kampar",
+    "Rokan Hulu",
+    "Bengkalis",
+    "Indragiri Hilir",
+    "Kuantan Singingi"
+  ],
+  "Jambi": [
+    "Jambi",
+    "Sungai Penuh",
+    "Muaro Jambi",
+    "Batanghari",
+    "Tebo",
+    "Bungo",
+    "Kerinci",
+    "Sarolangun"
+  ],
+  "Sumatera Selatan": [
+    "Palembang",
+    "Prabumulih",
+    "Pagar Alam",
+    "Lubuklinggau",
+    "Musi Banyuasin",
+    "Ogan Komering Ilir",
+    "Ogan Ilir",
+    "Banyuasin"
+  ],
+  "Bengkulu": [
+    "Bengkulu",
+    "Rejang Lebong",
+    "Kaur",
+    "Seluma",
+    "Muko Muko",
+    "Lebong",
+    "Kepahiang",
+    "Bengkulu Tengah"
+  ],
+  "Lampung": [
+    "Bandar Lampung",
+    "Metro",
+    "Lampung Selatan",
+    "Lampung Tengah",
+    "Lampung Utara",
+    "Lampung Barat",
+    "Tanggamus",
+    "Way Kanan"
+  ],
+  "Kepulauan Bangka Belitung": [
+    "Pangkal Pinang",
+    "Belitung",
+    "Belitung Timur",
+    "Bangka",
+    "Bangka Barat",
+    "Bangka Tengah",
+    "Bangka Selatan"
+  ],
+  "Kepulauan Riau": [
+    "Batam",
+    "Tanjung Pinang",
+    "Bintan",
+    "Karimun",
+    "Natuna",
+    "Lingga",
+    "Anambas"
+  ],
+  "DKI Jakarta": [
+    "Jakarta Pusat",
+    "Jakarta Utara",
+    "Jakarta Barat",
+    "Jakarta Selatan",
+    "Jakarta Timur",
+    "Kepulauan Seribu"
+  ],
+  "Jawa Barat": [
+    "Bandung",
+    "Bogor",
+    "Depok",
+    "Bekasi",
+    "Cimahi",
+    "Tasikmalaya",
+    "Sukabumi",
+    "Cirebon"
+  ],
+  "Jawa Tengah": [
+    "Semarang",
+    "Surakarta",
+    "Salatiga",
+    "Pekalongan",
+    "Tegal",
+    "Magelang",
+    "Banyumas",
+    "Kebumen"
+  ],
+  "DI Yogyakarta": [
+    "Yogyakarta",
+    "Bantul",
+    "Sleman",
+    "Gunung Kidul",
+    "Kulon Progo"
+  ],
+  "Jawa Timur": [
+    "Surabaya",
+    "Malang",
+    "Sidoarjo",
+    "Mojokerto",
+    "Jember",
+    "Banyuwangi",
+    "Kediri",
+    "Blitar"
+  ],
+  "Banten": [
+    "Serang",
+    "Tangerang",
+    "Cilegon",
+    "Tangerang Selatan",
+    "Lebak",
+    "Pandeglang",
+    "Serang"
+  ],
+  "Bali": [
+    "Denpasar",
+    "Badung",
+    "Gianyar",
+    "Tabanan",
+    "Buleleng",
+    "Karangasem",
+    "Klungkung",
+    "Jembrana"
+  ],
+  "Nusa Tenggara Barat": [
+    "Mataram",
+    "Bima",
+    "Lombok Barat",
+    "Lombok Tengah",
+    "Lombok Timur",
+    "Sumbawa",
+    "Dompu"
+  ],
+  "Nusa Tenggara Timur": [
+    "Kupang",
+    "Ende",
+    "Sikka",
+    "Ngada",
+    "Manggarai",
+    "Rote Ndao",
+    "Belu",
+    "Alor"
+  ],
+  "Kalimantan Barat": [
+    "Pontianak",
+    "Singkawang",
+    "Sambas",
+    "Bengkayang",
+    "Landak",
+    "Sanggau",
+    "Ketapang",
+    "Sintang"
+  ],
+  "Kalimantan Tengah": [
+    "Palangka Raya",
+    "Kotawaringin Barat",
+    "Kotawaringin Timur",
+    "Kapuas",
+    "Barito Selatan",
+    "Barito Utara",
+    "Murung Raya"
+  ],
+  "Kalimantan Selatan": [
+    "Banjarmasin",
+    "Banjarbaru",
+    "Tanah Laut",
+    "Kotabaru",
+    "Tapin",
+    "Hulu Sungai Selatan",
+    "Barito Kuala"
+  ],
+  "Kalimantan Timur": [
+    "Samarinda",
+    "Balikpapan",
+    "Bontang",
+    "Kutai Kartanegara",
+    "Berau",
+    "Penajam Paser Utara",
+    "Kutai Barat",
+    "Kutai Timur"
+  ],
+  "Kalimantan Utara": [
+    "Tanjung Selor",
+    "Tarakan",
+    "Bulungan",
+    "Nunukan",
+    "Tana Tidung",
+    "Malinau"
+  ],
+  "Sulawesi Utara": [
+    "Manado",
+    "Bitung",
+    "Tomohon",
+    "Minahasa",
+    "Bolaang Mongondow",
+    "Sangihe",
+    "Talaud"
+  ],
+  "Sulawesi Tengah": [
+    "Palu",
+    "Donggala",
+    "Toli-Toli",
+    "Buol",
+    "Morowali",
+    "Banggai",
+    "Poso"
+  ],
+  "Sulawesi Selatan": [
+    "Makassar",
+    "Parepare",
+    "Palopo",
+    "Gowa",
+    "Bone",
+    "Maros",
+    "Pangkajene Kepulauan",
+    "Barru"
+  ],
+  "Sulawesi Tenggara": [
+    "Kendari",
+    "Bau-Bau",
+    "Kolaka",
+    "Konawe",
+    "Muna",
+    "Buton",
+    "Wakatobi"
+  ],
+  "Gorontalo": [
+    "Gorontalo",
+    "Bone Bolango",
+    "Gorontalo Utara",
+    "Pohuwato",
+    "Boalemo"
+  ],
+  "Sulawesi Barat": [
+    "Mamuju",
+    "Majene",
+    "Polewali Mandar",
+    "Mamasa",
+    "Mamuju Utara"
+  ],
+  "Maluku": [
+    "Ambon",
+    "Tual",
+    "Maluku Tengah",
+    "Buru",
+    "Seram Bagian Barat",
+    "Seram Bagian Timur",
+    "Kepulauan Aru"
+  ],
+  "Maluku Utara": [
+    "Ternate",
+    "Tidore Kepulauan",
+    "Halmahera Barat",
+    "Halmahera Tengah",
+    "Halmahera Utara",
+    "Halmahera Selatan"
+  ],
+  "Papua Barat": [
+    "Manokwari",
+    "Sorong",
+    "Fakfak",
+    "Kaimana",
+    "Teluk Bintuni",
+    "Teluk Wondama",
+    "Raja Ampat"
+  ],
+  "Papua": [
+    "Jayapura",
+    "Merauke",
+    "Biak Numfor",
+    "Nabire",
+    "Mimika",
+    "Paniai",
+    "Puncak Jaya",
+    "Yalimo"
+  ]
+}

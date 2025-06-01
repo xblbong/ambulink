@@ -5,6 +5,7 @@ const path = require('path');
 // Import routes
 const authRoutes = require('./routes/authRoutes');
 const ambulansRoutes = require('./routes/ambulans');
+const reviewRoutes = require('./routes/reviewRoutes');
 
 // Create Express app
 const app = express();
@@ -20,6 +21,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/ambulans', ambulansRoutes);
+app.use('/api/review', reviewRoutes);
 
 // Serve index.html for all other routes
 app.get('*', (req, res) => {
