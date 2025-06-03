@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS ambulans (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nama VARCHAR(100) NOT NULL,
-    tipe_instansi ENUM('rumah_sakit', 'pmi', 'klinik', 'lainnya') NOT NULL,
-    jenis_layanan ENUM('gawat_darurat', 'non_gawat_darurat', 'jenazah') NOT NULL,
+    tipe_instansi ENUM('rs', 'puskesmas', 'klinik', 'lainnya') NOT NULL,
+    jenis_layanan ENUM('gawat_darurat', 'non_gawat_darurat', 'transportasi', 'jenazah') NOT NULL,
     status ENUM('gratis', 'berbayar') NOT NULL,
     harga DECIMAL(10,2),
     provinsi VARCHAR(50) NOT NULL,
@@ -49,6 +49,6 @@ CREATE TABLE IF NOT EXISTS reviews (
     rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
     komentar TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (ambulans_id) REFERENCES ambulans(id),
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (ambulans_id) REFERENCES ambulans(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ); 
