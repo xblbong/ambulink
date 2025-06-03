@@ -498,8 +498,8 @@
               Kirim
             </button>
           </form>
-        </div>
-      </div>
+                </div>
+            </div>
         </div>
 
         <!-- Add Chart.js -->
@@ -825,10 +825,10 @@
             position.coords.latitude,
             position.coords.longitude,
           ];
-                    console.log("Data lokasi lengkap:", {
-            lat: userLocation[0],
-            lng: userLocation[1],
-          });
+          //           console.log("Data lokasi lengkap:", {
+          //   lat: userLocation[0],
+          //   lng: userLocation[1],
+          // });
 
           // Remove existing user marker if any
                     if (userMarker) {
@@ -1061,7 +1061,7 @@
           // Ensure ambulanceData is always an array
           ambulanceData = Array.isArray(data) ? data : data.data || [];
 
-          console.log("Loaded ambulance data:", ambulanceData);
+          // console.log("Loaded ambulance data:", ambulanceData);
 
           if (ambulanceData.length === 0) {
             showToast("Tidak ada data ambulans yang tersedia", "info");
@@ -1104,7 +1104,7 @@
           radius: document.getElementById("filterRadius")?.value || 0,
         };
 
-        console.log("Applying filters:", filters);
+        // console.log("Applying filters:", filters);
 
         return ambulanceData.filter((ambulance) => {
           // Basic filters
@@ -1233,7 +1233,7 @@
             )
             .join("");
             } catch (error) {
-          console.error("Error updating nearest ambulance:", error);
+          // console.error("Error updating nearest ambulance:", error);
           nearestContainer.innerHTML =
             '<p class="text-red-500">Gagal memuat data ambulans terdekat</p>';
             }
@@ -1553,7 +1553,7 @@
 
             // Get filtered data
             const filteredData = filterAmbulanceData();
-        console.log("Filtered ambulance data:", filteredData);
+        // console.log("Filtered ambulance data:", filteredData);
             
             if (!filteredData || filteredData.length === 0) {
           showToast(
@@ -1624,7 +1624,7 @@
         container.innerHTML = "";
 
             const filteredData = filterAmbulanceData();
-        console.log("Updating cards with filtered data:", filteredData);
+        // console.log("Updating cards with filtered data:", filteredData);
 
             if (filteredData.length === 0) {
                 container.innerHTML = `
@@ -1784,8 +1784,8 @@
                                   </button>
                               `
             }
-                          </div>
-                      `;
+                    </div>
+                `;
 
                 container.appendChild(card);
             });
@@ -1798,14 +1798,14 @@
           const data = await response.json();
           
           const provinsiSelect = document.getElementById("filterProvinsi");
-          provinsiSelect.innerHTML = '<option value="">Semua Provinsi</option>';
+            provinsiSelect.innerHTML = '<option value="">Semua Provinsi</option>';
             
           Object.keys(data).sort().forEach(province => {
             const option = document.createElement("option");
             option.value = province;
             option.textContent = province;
-            provinsiSelect.appendChild(option);
-          });
+                provinsiSelect.appendChild(option);
+            });
 
           // Store data for city filtering
           provinsiSelect.dataset.provinceData = JSON.stringify(data);
@@ -1855,153 +1855,153 @@
         document.getElementById('filterKota').addEventListener('change', handleFilterChange);
       });
 
-      // Function to get coordinates from city name
-      async function getCoordinates(cityName, provinceName) {
-          try {
-              const query = `${cityName}, ${provinceName}, Indonesia`;
+        // Function to get coordinates from city name
+        async function getCoordinates(cityName, provinceName) {
+            try {
+                const query = `${cityName}, ${provinceName}, Indonesia`;
         const response = await fetch(
           `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
             query
           )}`
         );
-              const data = await response.json();
-              
-              if (data && data.length > 0) {
-                  return {
-                      lat: parseFloat(data[0].lat),
-                      lon: parseFloat(data[0].lon),
+                const data = await response.json();
+                
+                if (data && data.length > 0) {
+                    return {
+                        lat: parseFloat(data[0].lat),
+                        lon: parseFloat(data[0].lon),
             boundingbox: data[0].boundingbox,
-                  };
-              }
-              return null;
-          } catch (error) {
+                    };
+                }
+                return null;
+            } catch (error) {
         console.error("Error getting coordinates:", error);
-              return null;
-          }
-      }
+                return null;
+            }
+        }
 
-      // Function to center map on selected city
-      async function centerMapOnCity(cityName, provinceName) {
-          const coords = await getCoordinates(cityName, provinceName);
-          if (coords) {
-              // Get markers in the selected city
+        // Function to center map on selected city
+        async function centerMapOnCity(cityName, provinceName) {
+            const coords = await getCoordinates(cityName, provinceName);
+            if (coords) {
+                // Get markers in the selected city
         const cityMarkers = markers.filter((marker) => {
-                  const ambulans = marker.ambulansData;
-                  return ambulans && ambulans.kota === cityName;
-              });
+                    const ambulans = marker.ambulansData;
+                    return ambulans && ambulans.kota === cityName;
+                });
 
-              if (cityMarkers.length > 0) {
-                  // Create a bounds object that includes all markers in the city
-                  const group = L.featureGroup(cityMarkers);
-                  map.fitBounds(group.getBounds(), {
-                      padding: [50, 50], // Add some padding around the bounds
+                if (cityMarkers.length > 0) {
+                    // Create a bounds object that includes all markers in the city
+                    const group = L.featureGroup(cityMarkers);
+                    map.fitBounds(group.getBounds(), {
+                        padding: [50, 50], // Add some padding around the bounds
             maxZoom: 13, // Limit maximum zoom level
-                  });
-              } else {
-                  // If no markers in the city, use coordinates from geocoding
-                  map.setView([coords.lat, coords.lon], 13);
-              }
+                    });
+                } else {
+                    // If no markers in the city, use coordinates from geocoding
+                    map.setView([coords.lat, coords.lon], 13);
+                }
 
-              // Show toast message
+                // Show toast message
         showToast(
           `Peta dipusatkan ke ${cityName}, ${provinceName}`,
           "success"
         );
-          }
-      }
+            }
+        }
 
-      // Update filter options
-      function updateFilters() {
+        // Update filter options
+        function updateFilters() {
       const provinsiSelect = document.getElementById("filterProvinsi");
       const kotaSelect = document.getElementById("filterKota");
-          const selectedProvinsi = provinsiSelect.value;
+            const selectedProvinsi = provinsiSelect.value;
 
-          // Reset kota filter when provinsi changes
-          if (provinsiSelect.dataset.lastValue !== selectedProvinsi) {
-              kotaSelect.innerHTML = '<option value="">Semua Kota</option>';
-              provinsiSelect.dataset.lastValue = selectedProvinsi;
-          }
+            // Reset kota filter when provinsi changes
+            if (provinsiSelect.dataset.lastValue !== selectedProvinsi) {
+                kotaSelect.innerHTML = '<option value="">Semua Kota</option>';
+                provinsiSelect.dataset.lastValue = selectedProvinsi;
+            }
 
-          // Show all unique cities from ambulance data
-          const kotaSet = new Set();
+            // Show all unique cities from ambulance data
+            const kotaSet = new Set();
       ambulanceData.forEach((ambulance) => {
-              if (selectedProvinsi) {
-                  // If province is selected, only show cities from that province
+                if (selectedProvinsi) {
+                    // If province is selected, only show cities from that province
           if (
             ambulance.provinsi.toUpperCase() === selectedProvinsi &&
             ambulance.kota
           ) {
-                      kotaSet.add(ambulance.kota);
-                  }
-              } else {
-                  // If no province selected, show all cities
-                  if (ambulance.kota) {
-                      kotaSet.add(ambulance.kota);
-                  }
-              }
-          });
+                        kotaSet.add(ambulance.kota);
+                    }
+                } else {
+                    // If no province selected, show all cities
+                    if (ambulance.kota) {
+                        kotaSet.add(ambulance.kota);
+                    }
+                }
+            });
 
-          // Update kota options
-          const currentKota = kotaSelect.value;
-          kotaSelect.innerHTML = '<option value="">Semua Kota</option>';
+            // Update kota options
+            const currentKota = kotaSelect.value;
+            kotaSelect.innerHTML = '<option value="">Semua Kota</option>';
       Array.from(kotaSet)
         .sort()
         .forEach((kota) => {
           const option = document.createElement("option");
-              option.value = kota;
-              option.textContent = kota;
-              if (kota === currentKota) {
-                  option.selected = true;
-              }
-              kotaSelect.appendChild(option);
-          });
+                option.value = kota;
+                option.textContent = kota;
+                if (kota === currentKota) {
+                    option.selected = true;
+                }
+                kotaSelect.appendChild(option);
+            });
 
-          // Update cards and map
-          updateCards();
-          updateMarkers();
-      }
+            // Update cards and map
+            updateCards();
+            updateMarkers();
+        }
 
-      // Helper function untuk menampilkan tipe instansi
-      function getTipeInstansiLabel(value) {
-          const labels = {
+        // Helper function untuk menampilkan tipe instansi
+        function getTipeInstansiLabel(value) {
+            const labels = {
         rs: "Rumah Sakit",
         puskesmas: "Puskesmas",
         klinik: "Klinik",
         lainnya: "Lainnya",
-          };
-          return labels[value] || value;
-      }
+            };
+            return labels[value] || value;
+        }
 
-      // Add radius circle visualization
-      let radiusCircle = null;
+        // Add radius circle visualization
+        let radiusCircle = null;
 
-      function updateRadiusVisualization() {
-          if (radiusCircle) {
-              map.removeLayer(radiusCircle);
-          }
+        function updateRadiusVisualization() {
+            if (radiusCircle) {
+                map.removeLayer(radiusCircle);
+            }
 
       const radius = parseFloat(
         document.getElementById("filterRadius").value
       );
-          if (userLocation && radius > 0) {
-              radiusCircle = L.circle(userLocation, {
-                  radius: radius * 1000, // Convert km to meters
+            if (userLocation && radius > 0) {
+                radiusCircle = L.circle(userLocation, {
+                    radius: radius * 1000, // Convert km to meters
           color: "#AA1919",
           fillColor: "#AA1919",
-                  fillOpacity: 0.1,
+                    fillOpacity: 0.1,
           weight: 1,
-              }).addTo(map);
-          }
-      }
+                }).addTo(map);
+            }
+        }
 
-      // Add statistics functions
-      function updateStatistics() {
-          updateAmbulanceTypeChart();
-          updateAmbulanceStatusChart();
-      }
+        // Add statistics functions
+        function updateStatistics() {
+            updateAmbulanceTypeChart();
+            updateAmbulanceStatusChart();
+        }
 
-      function updateAmbulanceTypeChart() {
-          const typeCount = {};
+        function updateAmbulanceTypeChart() {
+            const typeCount = {};
       ambulanceData.forEach((ambulance) => {
         typeCount[ambulance.tipe_instansi] =
           (typeCount[ambulance.tipe_instansi] || 0) + 1;
@@ -2018,40 +2018,40 @@
 
       ambulanceTypeChart = new Chart(ctx, {
         type: "pie",
-              data: {
+                data: {
           labels: Object.keys(typeCount).map((type) =>
             getTipeInstansiLabel(type)
           ),
           datasets: [
             {
-                      data: Object.values(typeCount),
+                        data: Object.values(typeCount),
               backgroundColor: ["#AA1919", "#DC2626", "#EF4444", "#F87171"],
             },
           ],
-              },
-              options: {
-                  responsive: true,
-                  plugins: {
-                      legend: {
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
               position: "bottom",
-                      },
-                      title: {
-                          display: true,
+                        },
+                        title: {
+                            display: true,
               text: "Distribusi Tipe Ambulans",
             },
           },
         },
-          });
-      }
+            });
+        }
 
-      function updateAmbulanceStatusChart() {
-          const statusCount = {
-              gratis: 0,
+        function updateAmbulanceStatusChart() {
+            const statusCount = {
+                gratis: 0,
         berbayar: 0,
-          };
+            };
       ambulanceData.forEach((ambulance) => {
-              statusCount[ambulance.status]++;
-          });
+                statusCount[ambulance.status]++;
+            });
 
       const ctx = document
         .getElementById("ambulanceStatusChart")
@@ -2064,23 +2064,23 @@
 
       ambulanceStatusChart = new Chart(ctx, {
         type: "doughnut",
-              data: {
+                data: {
           labels: ["Gratis", "Berbayar"],
           datasets: [
             {
-                      data: Object.values(statusCount),
+                        data: Object.values(statusCount),
               backgroundColor: ["#059669", "#AA1919"],
             },
           ],
-              },
-              options: {
-                  responsive: true,
-                  plugins: {
-                      legend: {
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
               position: "bottom",
-                      },
-                      title: {
-                          display: true,
+                        },
+                        title: {
+                            display: true,
               text: "Status Layanan Ambulans",
             },
           },
@@ -2220,7 +2220,7 @@
       }
 
       // Fungsi untuk menutup modal review
-      function closeReviewModal() {
+        function closeReviewModal() {
         const modal = document.getElementById("reviewModal");
         modal.classList.add("hidden");
 
@@ -2371,17 +2371,17 @@
         // Star rating functionality
         document.querySelectorAll(".star-btn").forEach((btn) => {
           btn.addEventListener("click", (e) => {
-            const rating = parseInt(e.target.dataset.rating);
+                const rating = parseInt(e.target.dataset.rating);
             document.querySelectorAll(".star-btn").forEach((star, index) => {
-              if (index < rating) {
+                    if (index < rating) {
                 star.classList.remove("text-gray-300");
                 star.classList.add("text-yellow-400");
-              } else {
+                    } else {
                 star.classList.remove("text-yellow-400");
                 star.classList.add("text-gray-300");
-              }
+                    }
+                });
             });
-          });
         });
 
         // Review form submission
@@ -2415,10 +2415,10 @@
               const kotaSelect = document.getElementById('filterKota');
               kotaSelect.innerHTML = '<option value="">Semua Kota</option>';
               kotaSelect.disabled = true;
-              return;
-          }
+                return;
+            }
 
-          try {
+            try {
               const response = await fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provinceId}.json`);
               const cities = await response.json();
               
@@ -2433,15 +2433,15 @@
               });
               
               kotaSelect.disabled = false;
-          } catch (error) {
+            } catch (error) {
               console.error('Error loading cities:', error);
-          }
+            }
       }
 
       // Event listener for province change
       document.getElementById('filterProvinsi').addEventListener('change', function() {
           loadCities(this.value);
-      });
+        });
 
       // Load provinces on page load
       document.addEventListener('DOMContentLoaded', loadProvinceData);
@@ -2505,7 +2505,7 @@
         <!-- Survei -->
         <div class="space-y-4">
           <h5 class="text-lg font-semibold">Survei Kepuasan</h5>
-          <a href="#"
+          <a href="mailto:info@ambulink.id"
             class="inline-block bg-white text-[#AA1919] px-4 py-2 rounded-lg hover:bg-red-100 transition-colors duration-300 text-sm font-medium">
             Beri Feedback
           </a>

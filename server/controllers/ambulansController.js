@@ -102,7 +102,7 @@ const ambulansController = {
 
       res.json({ message: 'Ambulans berhasil diperbarui' });
     } catch (error) {
-      console.error('Error updating ambulans:', error);
+      // console.error('Error updating ambulans:', error);
       res.status(500).json({ message: 'Terjadi kesalahan saat memperbarui ambulans' });
     }
   },
