@@ -7,7 +7,8 @@
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
     "build": "npm install",
-    "vercel-build": "npm run build"
+    "vercel-build": "npm run build",
+    "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -22,6 +23,9 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   },
   "keywords": [],
   "author": "",
