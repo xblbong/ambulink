@@ -7,6 +7,9 @@ const authRoutes = require("./routes/authRoutes");
 const ambulansRoutes = require("./routes/ambulans");
 const reviewRoutes = require("./routes/reviewRoutes");
 
+// Import migrations
+const createReviewsTable = require("./migrations/reviews");
+
 // Create Express app
 const app = express();
 
@@ -21,6 +24,20 @@ app.use(express.static(path.join(__dirname, "../public")));
 // Health check endpoint
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+// Migration endpoint (development only)
+app.post("/api/migrate", async (req, res) => {
+  try {
+    await createReviewsTable();
+    res.json({ message: "Migration completed successfully" });
+  } catch (err) {
+    console.error("Migration failed:", err);
+    res.status(500).json({ 
+      error: "Migration failed", 
+      details: err.message 
+    });
+  }
 });
 
 // Routes

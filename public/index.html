@@ -644,11 +644,28 @@
 
       // Initialize map and load data
       document.addEventListener("DOMContentLoaded", async () => {
-        initMap();
+        // Initialize map only if it hasn't been initialized
+        if (!map) {
+          initMap();
+        }
+        await loadProvinsiData();
         await loadAmbulanceData();
         await getCurrentLocation();
         setupEventListeners();
         updateUI();
+
+        // Check authentication
+        const token = localStorage.getItem("token");
+        isAuthenticated = !!token;
+
+        // Handle provinsi change
+        document.getElementById('filterProvinsi').addEventListener('change', (e) => {
+          updateKotaOptions(e.target.value);
+          handleFilterChange();
+        });
+
+        // Handle kota change
+        document.getElementById('filterKota').addEventListener('change', handleFilterChange);
       });
 
       // Update UI based on authentication
@@ -756,6 +773,12 @@
 
         // Initialize map
         function initMap() {
+        // Check if map is already initialized
+        if (map) {
+          console.warn('Map is already initialized');
+          return;
+        }
+        
         map = L.map("map").setView([-2.5489, 118.0149], 5);
             
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -1837,8 +1860,11 @@
       }
 
       // Initialize when page loads
-      document.addEventListener('DOMContentLoaded', async () => {
-        initMap();
+      document.addEventListener("DOMContentLoaded", async () => {
+        // Initialize map only if it hasn't been initialized
+        if (!map) {
+          initMap();
+        }
         await loadProvinsiData();
         await loadAmbulanceData();
         await getCurrentLocation();
@@ -1853,6 +1879,10 @@
 
         // Handle kota change
         document.getElementById('filterKota').addEventListener('change', handleFilterChange);
+
+        // Check authentication
+        const token = localStorage.getItem("token");
+        isAuthenticated = !!token;
       });
 
         // Function to get coordinates from city name
@@ -2101,26 +2131,25 @@
       hiddenId.value = ambulansId;
 
       try {
-        const response = await fetch(`/api/review/${ambulansId}`);
+        const response = await fetch(`/api/reviews/${ambulansId}`); // Changed from /api/review to /api/reviews
         if (!response.ok) throw new Error("Gagal ambil review");
 
         const data = await response.json();
 
         if (data.length === 0) {
           reviewList.innerHTML = `<p class="text-sm text-gray-500">Belum ada review untuk ambulans ini.</p>`;
-                  } else {
+        } else {
           reviewList.innerHTML = data
             .map(
               (review) => `
               <div class="mb-4 border-b pb-2">
                 <div class="flex items-center justify-between">
                   <strong>${review.nama}</strong>
-                  <span class="text-yellow-400">${"★".repeat(
-                review.rating
-              )}${"☆".repeat(5 - review.rating)}</span>
+                  <span class="text-yellow-400">${"★".repeat(review.rating)}${"☆".repeat(
+            5 - review.rating
+          )}</span>
                 </div>
-                <p class="text-sm text-gray-600">${review.komentar || "(tanpa komentar)"
-                }</p>
+                <p class="text-sm text-gray-600">${review.komentar || "(tanpa komentar)"}</p>
               </div>
             `
             )
@@ -2137,78 +2166,85 @@
 
     // Fungsi untuk mengirim review
     async function handleReviewSubmit(e) {
-          e.preventDefault();
-          
-      if (!isAuthenticated) {
+      e.preventDefault();
+      
+      try {
+        // Check if user is authenticated
+        const token = localStorage.getItem("token");
+        if (!token) {
+          showToast("Anda harus login terlebih dahulu untuk memberikan review", "error");
+          setTimeout(() => {
+            window.location.href = "/login.html";
+          }, 2000);
+          return;
+        }
+
+        const ambulansId = document.getElementById("reviewAmbulansId").value;
+        const komentar = document.getElementById("reviewKomentar").value;
+        const rating = selectedRating;
+
+        // Validasi input
+        if (!rating || rating < 1 || rating > 5) {
+          showToast("Silakan beri rating antara 1-5 bintang", "error");
+          return;
+        }
+
+        if (!ambulansId) {
+          showToast("ID ambulans tidak valid", "error");
+          return;
+        }
+
+        // Show loading state
+        showToast("Mengirim review...", "info");
+
+        const response = await fetch("/api/reviews", { // Changed from /api/review to /api/reviews
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            ambulans_id: parseInt(ambulansId),
+            rating: parseInt(rating),
+            komentar: komentar || "",
+          }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            // Token expired atau tidak valid
+            localStorage.removeItem("token");
+            showToast("Sesi Anda telah berakhir. Silakan login kembali", "error");
+            setTimeout(() => {
+              window.location.href = "/login.html";
+            }, 2000);
+            return;
+          }
+          throw new Error(result.message || "Gagal mengirim review");
+        }
+
+        showToast(result.message || "Review berhasil dikirim", "success");
+
+        // Reset form
+        document.getElementById("reviewKomentar").value = "";
+        selectedRating = 0;
+        updateStarButtons();
+
+        // Refresh reviews
+        await showReviewModal(ambulansId);
+
+        // Refresh data ambulans untuk update rating
+        await loadAmbulanceData();
+      } catch (error) {
+        console.error("Error submitting review:", error);
         showToast(
-          "Anda harus login terlebih dahulu untuk memberikan review",
+          error.message || "Gagal mengirim review. Silakan coba lagi nanti",
           "error"
         );
-        setTimeout(() => {
-          window.location.href = "/login.html";
-        }, 2000);
-        return;
       }
-
-      const ambulansId = document.getElementById("reviewAmbulansId").value;
-      const komentar = document.getElementById("reviewKomentar").value;
-      const rating = selectedRating;
-
-      // Validasi lebih ketat
-      if (!rating || rating < 1 || rating > 5) {
-        showToast("Silakan beri rating antara 1-5 bintang", "error");
-        return;
-      }
-
-      if (!ambulansId) {
-        showToast("ID ambulans tidak valid", "error");
-                return;
-            }
-
-            try {
-          const token = localStorage.getItem("token");
-
-          const response = await fetch("/api/review", {
-            method: "POST",
-                    headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({
-                        ambulans_id: ambulansId,
-              rating: rating,
-              komentar: komentar || "", // Pastikan komentar tidak null
-            }),
-                });
-
-                if (!response.ok) {
-            // Coba parse error message
-            try {
-              const errorData = await response.json();
-              throw new Error(errorData.message || "Gagal mengirim review");
-            } catch (parseError) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-          }
-
-          const result = await response.json();
-          showToast(result.message || "Review berhasil dikirim", "success");
-
-          // Refresh reviews
-          await showReviewModal(ambulansId);
-
-          // Kosongkan form
-          document.getElementById("reviewKomentar").value = "";
-          selectedRating = 0;
-          updateStarButtons();
-
-          // Refresh data ambulans untuk update rating
-          await loadAmbulanceData();
-            } catch (error) {
-          console.error("Error submitting review:", error);
-          showToast(error.message || "Gagal mengirim review", "error");
-        }
-      }
+    }
 
       // Fungsi untuk mengupdate tampilan bintang rating
       function updateStarButtons() {

@@ -1,26 +1,50 @@
 const db = require('../config/db');
+const { v4: uuidv4 } = require('uuid');
 
 exports.findByAmbulansId = (id) => {
   return db.query(`
-    SELECT reviews.*, users.nama FROM reviews
-    JOIN users ON reviews.user_id = users.id
-    WHERE ambulans_id = ?
-    ORDER BY created_at DESC
+    SELECT r.*, u.nama 
+    FROM reviews r
+    LEFT JOIN users u ON r.user_id = u.id
+    WHERE r.ambulans_id = ?
+    ORDER BY r.created_at DESC
   `, [id]);
 };
 
-exports.create = ({ ambulans_id, user_id, rating, komentar }) => {
+exports.findByUserAndAmbulans = (userId, ambulansId) => {
   return db.query(`
-    INSERT INTO reviews (ambulans_id, user_id, rating, komentar)
-    VALUES (?, ?, ?, ?)
-  `, [ambulans_id, user_id, rating, komentar]);
+    SELECT * FROM reviews 
+    WHERE user_id = ? AND ambulans_id = ?
+  `, [userId, ambulansId]);
 };
 
-exports.updateRating = (ambulans_id) => {
+exports.create = ({ ambulans_id, user_id, rating, komentar }) => {
+  const id = uuidv4();
   return db.query(`
-    UPDATE ambulans SET 
-      rating = (SELECT ROUND(AVG(rating), 1) FROM reviews WHERE ambulans_id = ?),
-      jumlah_rating = (SELECT COUNT(*) FROM reviews WHERE ambulans_id = ?)
-    WHERE id = ?
-  `, [ambulans_id, ambulans_id, ambulans_id]);
+    INSERT INTO reviews (id, ambulans_id, user_id, rating, komentar, created_at)
+    VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+  `, [id, ambulans_id, user_id, rating, komentar]);
+};
+
+exports.updateRating = async (ambulans_id) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        ROUND(AVG(rating), 1) as avg_rating,
+        COUNT(*) as total_reviews
+      FROM reviews 
+      WHERE ambulans_id = ?
+    `, [ambulans_id]);
+
+    if (rows && rows[0]) {
+      await db.query(`
+        UPDATE ambulans 
+        SET rating = ?, jumlah_rating = ?
+        WHERE id = ?
+      `, [rows[0].avg_rating || 0, rows[0].total_reviews || 0, ambulans_id]);
+    }
+  } catch (err) {
+    console.error('Error updating rating:', err);
+    throw err;
+  }
 };
