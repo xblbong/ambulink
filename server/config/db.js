@@ -1,84 +1,95 @@
+// public/js/db.js
 require("dotenv").config();
-const mysql = require("mysql2");
+const { Pool } = require("pg"); // Gunakan driver 'pg'
 
-const config = {
-  development: {
-    host: process.env.DB_HOST || "localhost",
-    user: process.env.DB_USER || "root",
-    password: process.env.DB_PASSWORD || "",
-    database: process.env.DB_NAME || "gis_ambulans",
-    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
-  },
-  production: {
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "",
-  database: process.env.DB_NAME || "gis_ambulans",
-  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-  connectTimeout: 10000,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-},
+// Fungsi untuk mem-parsing URL koneksi PostgreSQL dari DATABASE_URL (seperti yang digunakan Prisma)
+// Ini cara yang lebih baik daripada mengelola host, user, pass, dll secara terpisah untuk Neon
+// karena Neon sering memberikan connection string lengkap.
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  console.error("DATABASE_URL environment variable is not set!");
+  process.exit(1); // Keluar jika DATABASE_URL tidak ada
+}
+
+// Konfigurasi untuk 'pg' Pool
+// Untuk Neon, connectionString biasanya sudah mencakup semua yang dibutuhkan, termasuk SSL.
+const poolConfig = {
+  connectionString: connectionString,
+  // Opsi SSL biasanya sudah ditangani oleh connectionString dari Neon yang menyertakan ?sslmode=require
+  // Namun, jika Anda perlu mengaturnya secara eksplisit (jarang jika DATABASE_URL sudah benar):
+  // ssl: {
+  //   rejectUnauthorized: false, // Untuk Neon, ini biasanya diperlukan jika sertifikatnya self-signed atau dari CA yang tidak dikenal secara default oleh Node.js
+  // },
+  // Opsi pool lainnya (opsional, default biasanya cukup baik untuk memulai)
+  // max: 20, // jumlah maksimum klien dalam pool
+  // idleTimeoutMillis: 30000, // berapa lama klien bisa idle sebelum ditutup
+  // connectionTimeoutMillis: 2000, // berapa lama menunggu koneksi sebelum timeout
 };
 
-const env = process.env.NODE_ENV || "production";
-const dbConfig = config[env];
-
-// Log configuration (without sensitive data)
-console.log("Database Configuration:", {
-  environment: env,
-  host: dbConfig.host,
-  database: dbConfig.database,
-  configured: !!(dbConfig.host && dbConfig.user && dbConfig.database),
+// Log konfigurasi (tanpa menampilkan connectionString penuh yang berisi password)
+console.log("Database Configuration (PostgreSQL):", {
+  environment: process.env.NODE_ENV || "development", // Sesuaikan jika NODE_ENV berbeda untuk DB
+  usingConnectionString: !!connectionString,
 });
 
 // Create the connection pool
-const pool = mysql.createPool(dbConfig);
+const pool = new Pool(poolConfig);
 
-// Convert pool to use promises
-const promisePool = pool.promise();
-
-// Add error handling
-pool.on("error", (err) => {
-  console.error("Database pool error:", {
-    code: err.code,
+// Tambahkan event listener untuk error pada pool
+pool.on("error", (err, client) => {
+  console.error("Unexpected error on idle PostgreSQL client", {
     message: err.message,
-    fatal: err.fatal,
-    state: err.sqlState,
+    stack: err.stack, // Penting untuk debugging
   });
+  // Anda mungkin ingin menangani error ini dengan lebih baik,
+  // misalnya mencoba membuat ulang koneksi atau menghentikan aplikasi jika kritis.
 });
 
-// Test connection with better error handling
+// Test connection
 async function testConnection() {
+  let client;
   try {
-    await promisePool.query("SELECT 1");
-    console.log("Database connection successful");
+    client = await pool.connect(); // Dapatkan klien dari pool
+    const res = await client.query("SELECT NOW()"); // Query sederhana ke PostgreSQL
+    console.log(
+      "Database connection successful. Server time:",
+      res.rows[0].now
+    );
   } catch (err) {
     console.error("Database connection failed:", {
       message: err.message,
-      code: err.code,
-      state: err.sqlState,
-      fatal: err.fatal,
+      code: err.code, // Kode error dari pg bisa berbeda dari mysql2
+      stack: err.stack,
     });
-
     if (process.env.NODE_ENV === "development") {
       console.error("Please check:");
-      console.error("1. XAMPP/MySQL is running");
-      console.error('2. Database "gis_ambulans" exists');
-      console.error("3. User credentials are correct");
+      console.error(
+        "1. DATABASE_URL in .env is correct and points to your NeonDB."
+      );
+      console.error("2. NeonDB instance is running and accessible.");
+      console.error("3. Network/Firewall allows connection to NeonDB.");
     } else {
       console.error(
-        "Production database connection failed. Please check environment variables and SSL configuration."
+        "Production database connection failed. Please check DATABASE_URL and NeonDB status."
       );
+    }
+  } finally {
+    if (client) {
+      client.release(); // Selalu lepaskan klien kembali ke pool
     }
   }
 }
 
-// Test connection in both environments
+// Test connection
 testConnection();
 
-module.exports = promisePool;
+// Ekspor pool agar bisa digunakan di bagian lain aplikasi Anda
+// Fungsi query dari pool sudah mengembalikan Promise secara default di 'pg' versi modern
+module.exports = {
+  query: (text, params) => pool.query(text, params),
+  // Jika Anda membutuhkan akses langsung ke pool (misalnya untuk transaksi)
+  pool: pool,
+  // Anda juga bisa mengekspor fungsi untuk mendapatkan klien jika perlu (untuk transaksi manual)
+  getClient: () => pool.connect(),
+};

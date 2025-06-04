@@ -38,9 +38,15 @@ const ambulansController = {
     try {
       const { lat, lng, radius = 5 } = req.query;
       if (!lat || !lng) {
-        return res.status(400).json({ message: "Latitude dan longitude diperlukan" });
+        return res
+          .status(400)
+          .json({ message: "Latitude dan longitude diperlukan" });
       }
-      const ambulans = await Ambulans.getNearby(parseFloat(lat), parseFloat(lng), parseFloat(radius));
+      const ambulans = await Ambulans.getNearby(
+        parseFloat(lat),
+        parseFloat(lng),
+        parseFloat(radius)
+      );
       res.json(ambulans);
     } catch (error) {
       res.status(500).json({
