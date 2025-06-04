@@ -5,9 +5,11 @@
 1. Pastikan MySQL server sudah terinstall dan berjalan
 2. Buka terminal atau command prompt
 3. Login ke MySQL:
+
    ```bash
    mysql -u root -p
    ```
+
    Jika diminta password, masukkan password MySQL Anda
 
 4. Import skema database:
@@ -18,9 +20,11 @@
 ## Struktur Database
 
 ### Tabel `users`
+
 Menyimpan data pengguna yang dapat mengelola ambulans.
 
 Kolom:
+
 - `id`: ID unik pengguna (auto increment)
 - `nama`: Nama lengkap pengguna
 - `email`: Email pengguna (unik)
@@ -28,9 +32,11 @@ Kolom:
 - `created_at`: Waktu pembuatan akun
 
 ### Tabel `ambulans`
+
 Menyimpan data ambulans yang tersedia.
 
 Kolom:
+
 - `id`: ID unik ambulans (auto increment)
 - `penyedia`: Nama penyedia layanan ambulans
 - `kontak`: Nomor telepon yang bisa dihubungi
@@ -48,7 +54,9 @@ Kolom:
 ## Data Contoh
 
 ### Akun Demo
+
 1. Administrator
+
    - Email: admin@ambulink.com
    - Password: admin123
 
@@ -57,7 +65,9 @@ Kolom:
    - Password: user123
 
 ### Data Ambulans
+
 Database sudah diisi dengan 5 data ambulans contoh di berbagai kota:
+
 - RS Medika Ambulans (Jakarta)
 - Ambulans Siaga 24 Jam (Jakarta)
 - PMI Bandung (Bandung)
@@ -67,42 +77,48 @@ Database sudah diisi dengan 5 data ambulans contoh di berbagai kota:
 ## Query Contoh
 
 1. Menampilkan semua ambulans dengan informasi penyedia:
+
    ```sql
-   SELECT a.*, u.nama as nama_penyedia 
-   FROM ambulans a 
+   SELECT a.*, u.nama as nama_penyedia
+   FROM ambulans a
    LEFT JOIN users u ON a.user_id = u.id;
    ```
 
 2. Mencari ambulans berdasarkan kota:
+
    ```sql
    SELECT * FROM ambulans WHERE kota = 'Jakarta';
    ```
 
 3. Menampilkan ambulans gratis:
+
    ```sql
    SELECT * FROM ambulans WHERE status = 'gratis';
    ```
 
 4. Menampilkan ambulans dengan harga tertentu:
+
    ```sql
    SELECT * FROM ambulans WHERE harga <= 500000;
    ```
 
 5. Menghitung jumlah ambulans per kota:
    ```sql
-   SELECT kota, COUNT(*) as jumlah 
-   FROM ambulans 
+   SELECT kota, COUNT(*) as jumlah
+   FROM ambulans
    GROUP BY kota;
    ```
 
 ## Backup dan Restore
 
 ### Backup Database
+
 ```bash
 mysqldump -u root -p gis_ambulans > backup_ambulink.sql
 ```
 
 ### Restore Database
+
 ```bash
 mysql -u root -p gis_ambulans < backup_ambulink.sql
 ```
@@ -110,11 +126,13 @@ mysql -u root -p gis_ambulans < backup_ambulink.sql
 ## Pemeliharaan Database
 
 1. Bersihkan data yang tidak terpakai:
+
    ```sql
    DELETE FROM ambulans WHERE user_id IS NULL;
    ```
 
 2. Update status ambulans:
+
    ```sql
    UPDATE ambulans SET status = 'berbayar' WHERE harga > 0;
    ```
@@ -134,11 +152,13 @@ mysql -u root -p gis_ambulans < backup_ambulink.sql
 ## Troubleshooting
 
 1. Jika gagal koneksi:
+
    - Periksa service MySQL berjalan
    - Periksa kredensial di file `.env`
    - Pastikan database `gis_ambulans` sudah dibuat
 
 2. Jika gagal login:
+
    - Pastikan email terdaftar
    - Password case sensitive
    - Periksa tabel `users` untuk memastikan data ada
@@ -146,4 +166,6 @@ mysql -u root -p gis_ambulans < backup_ambulink.sql
 3. Jika gagal menambah ambulans:
    - Pastikan semua field required terisi
    - Periksa koneksi ke database
-   - Validasi format data (koordinat, nomor telepon) 
+   - Validasi format data (koordinat, nomor telepon)
+
+---
