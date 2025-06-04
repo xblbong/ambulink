@@ -1,208 +1,264 @@
+// public/models/Ambulans.js
 const db = require("../config/db");
 
 class Ambulans {
   static async getAll() {
+    const queryText = "SELECT * FROM ambulans WHERE active = true";
     try {
-      const [rows] = await db.query("SELECT * FROM ambulans WHERE active = true");
-      return rows;
+      const result = await db.query(queryText);
+      return result.rows;
     } catch (error) {
-      console.error("Error in getAll:", error);
+      console.error("Error in Ambulans.getAll:", error);
       throw error;
     }
   }
 
   static async getById(id) {
+    const queryText = "SELECT * FROM ambulans WHERE id = $1 AND active = true";
+    const values = [id];
     try {
-      const [rows] = await db.query(
-        "SELECT * FROM ambulans WHERE id = ? AND active = true",
-        [id]
-      );
-      return rows[0];
+      const result = await db.query(queryText, values);
+      return result.rows[0];
     } catch (error) {
-      console.error("Error in getById:", error);
+      console.error("Error in Ambulans.getById:", error);
       throw error;
     }
   }
 
   static async getNearby(lat, lng, radius) {
+    const queryText = `
+      SELECT *, (
+        6371 * acos(
+          cos(radians($1)) * cos(radians(latitude)) *
+          cos(radians(longitude) - radians($2)) +
+          sin(radians($1)) * sin(radians(latitude))
+        )
+      ) AS distance
+      FROM ambulans
+      WHERE active = true
+      HAVING (
+        6371 * acos(
+          cos(radians($1)) * cos(radians(latitude)) *
+          cos(radians(longitude) - radians($2)) +
+          sin(radians($1)) * sin(radians(latitude))
+        )
+      ) <= $3
+      ORDER BY distance
+    `;
+    const values = [lat, lng, radius]; // $1=lat, $2=lng, $3=radius
     try {
-      const query = `
-        SELECT *, (
-          6371 * acos(
-            cos(radians(?)) * cos(radians(latitude)) *
-            cos(radians(longitude) - radians(?)) +
-            sin(radians(?)) * sin(radians(latitude))
-          )
-        ) AS distance
-        FROM ambulans
-        WHERE active = true
-        HAVING distance <= ?
-        ORDER BY distance
-      `;
-
-      const [rows] = await db.query(query, [lat, lng, lat, radius]);
-      return rows;
+      const result = await db.query(queryText, values);
+      return result.rows;
     } catch (error) {
-      console.error("Error in getNearby:", error);
+      console.error("Error in Ambulans.getNearby:", error);
       throw error;
     }
   }
 
   static async create(ambulansData) {
+    // Asumsi 'id' di tabel 'ambulans' adalah SERIAL/BIGSERIAL
+    const {
+      nama,
+      kontak,
+      whatsapp,
+      alamat,
+      provinsi,
+      kota,
+      latitude,
+      longitude,
+      status,
+      tipe_instansi,
+      jenis_layanan,
+      harga,
+      fasilitas,
+      jam_operasional,
+      deskripsi,
+      user_id,
+      rating: inputRating, // rating dan jumlah_rating biasanya tidak di-set saat create
+      jumlah_rating: inputJumlahRating,
+    } = ambulansData;
+
+    // Rating dan jumlah_rating biasanya dimulai dari 0 atau dihitung nanti
+    const rating = inputRating !== undefined ? parseFloat(inputRating) : 0.0;
+    const jumlah_rating =
+      inputJumlahRating !== undefined ? parseInt(inputJumlahRating) : 0;
+
+    // Kolom yang akan di-insert. 'id' tidak dimasukkan jika SERIAL.
+    // 'active' dan 'verified' di-set default di query.
+    const queryText = `
+      INSERT INTO ambulans (
+        nama, kontak, whatsapp, alamat, provinsi, kota, latitude, longitude,
+        status, tipe_instansi, jenis_layanan, harga, fasilitas,
+        jam_operasional, deskripsi, user_id, active, verified, rating, jumlah_rating,
+        created_at, updated_at -- Tambahkan kolom ini
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16,
+        true, false, $17, $18,
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP -- Tambahkan nilai untuk kolom tersebut
+      ) RETURNING *`;
+
+    const values = [
+      nama,
+      kontak,
+      whatsapp || null,
+      alamat,
+      provinsi,
+      kota,
+      latitude,
+      longitude,
+      status,
+      tipe_instansi,
+      jenis_layanan,
+      harga === undefined || harga === null ? null : parseFloat(harga),
+      fasilitas, // Jika kolom fasilitas adalah JSON/JSONB, kirim objek/array langsung
+      // Jika teks, JSON.stringify(fasilitas)
+      jam_operasional || null,
+      deskripsi || null,
+      user_id,
+      rating,
+      jumlah_rating,
+    ];
+
     try {
-      const {
-        id,
-        nama,
-        kontak,
-        whatsapp,
-        alamat,
-        provinsi,
-        kota,
-        latitude,
-        longitude,
-        status,
-        tipe_instansi,
-        jenis_layanan,
-        harga,
-        fasilitas,
-        jam_operasional,
-        deskripsi,
-        user_id,
-        rating: inputRating,
-        jumlah_rating,
-      } = ambulansData;
-
-      const rating = inputRating !== undefined ? inputRating : 0;
-
-      const [result] = await db.query(
-        `INSERT INTO ambulans (
-          id, nama, kontak, whatsapp, alamat, provinsi,
-          kota, latitude, longitude, status,
-          tipe_instansi, jenis_layanan, harga,
-          fasilitas, jam_operasional, deskripsi,
-          user_id, active, verified, rating, jumlah_rating
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, true, false, ?, ?)`,
-        [
-          id,
-          nama,
-          kontak,
-          whatsapp || null,
-          alamat,
-          provinsi,
-          kota,
-          latitude,
-          longitude,
-          status,
-          tipe_instansi,
-          jenis_layanan,
-          harga || 0,
-          JSON.stringify(fasilitas),
-          jam_operasional || null,
-          deskripsi || null,
-          user_id,
-          rating,
-          jumlah_rating,
-        ]
-      );
-
-      return result.insertId;
+      console.log("--- DEBUG Ambulans.create MODEL ---");
+      console.log("QUERY TO BE EXECUTED:", queryText); // Ini akan menunjukkan querynya
+      console.log("VALUES FOR QUERY:", values);
+      console.log("DATA RECEIVED:", ambulansData);
+      console.log("--- END DEBUG MODEL ---");
+      const result = await db.query(queryText, values);
+      return result.rows[0];
     } catch (error) {
-      console.error("Error in create:", error);
+      console.error("Error in Ambulans.create:", error);
+      console.error("Failed Query:", queryText);
+      console.error("Failed Values:", values);
       throw error;
     }
   }
 
   static async update(id, ambulansData) {
+    const fields = [];
+    const values = [];
+    let placeholderIndex = 1;
+
+    for (const key in ambulansData) {
+      if (ambulansData.hasOwnProperty(key) && key !== "id") {
+        if (key === "fasilitas" && typeof ambulansData[key] !== "string") {
+          fields.push(`${key} = $${placeholderIndex++}`);
+          values.push(JSON.stringify(ambulansData[key]));
+        } else if (
+          key === "harga" &&
+          (ambulansData[key] === undefined || ambulansData[key] === null)
+        ) {
+          fields.push(`${key} = $${placeholderIndex++}`);
+          values.push(null);
+        } else {
+          fields.push(`${key} = $${placeholderIndex++}`);
+          values.push(ambulansData[key]);
+        }
+      }
+    }
+
+    if (fields.length === 0) {
+      return false;
+    }
+
+    const queryText = `
+      UPDATE ambulans
+      SET ${fields.join(", ")}
+      WHERE id = $${placeholderIndex}
+      RETURNING *`;
+    values.push(id);
+
     try {
-      const [result] = await db.query("UPDATE ambulans SET ? WHERE id = ?", [
-        ambulansData,
-        id,
-      ]);
-      return result.affectedRows > 0;
+      const result = await db.query(queryText, values);
+      return result.rows[0];
     } catch (error) {
-      console.error("Error in update:", error);
+      console.error("Error in Ambulans.update:", error);
       throw error;
     }
   }
 
   static async delete(id) {
+    const queryText =
+      "UPDATE ambulans SET active = false, updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING id";
+    const values = [id];
     try {
-      const [result] = await db.query(
-        "UPDATE ambulans SET active = false WHERE id = ?",
-        [id]
-      );
-      return result.affectedRows > 0;
+      const result = await db.query(queryText, values);
+      return result.rowCount > 0;
     } catch (error) {
-      console.error("Error in delete:", error);
+      console.error("Error in Ambulans.delete (soft):", error);
       throw error;
     }
   }
 
   static async getByProvider(providerId) {
+    const queryText =
+      "SELECT * FROM ambulans WHERE user_id = $1 AND active = true";
+    const values = [providerId];
     try {
-      const [rows] = await db.query(
-        "SELECT * FROM ambulans WHERE provider_id = ? AND active = true",
-        [providerId]
-      );
-      return rows;
+      const result = await db.query(queryText, values);
+      return result.rows;
     } catch (error) {
-      console.error("Error in getByProvider:", error);
+      console.error("Error in Ambulans.getByProvider:", error);
       throw error;
     }
   }
 
   static async verify(id) {
+    const queryText =
+      "UPDATE ambulans SET verified = true, updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING id";
+    const values = [id];
     try {
-      const [result] = await db.query(
-        "UPDATE ambulans SET verified = true WHERE id = ?",
-        [id]
-      );
-      return result.affectedRows > 0;
+      const result = await db.query(queryText, values);
+      return result.rowCount > 0;
     } catch (error) {
-      console.error("Error in verify:", error);
+      console.error("Error in Ambulans.verify:", error);
       throw error;
     }
   }
 
   static async search(filters) {
+    let queryBase = "SELECT * FROM ambulans WHERE active = true";
+    const conditions = [];
+    const values = [];
+    let placeholderIndex = 1;
+
+    if (filters.provinsi) {
+      conditions.push(`provinsi ILIKE $${placeholderIndex++}`);
+      values.push(`%${filters.provinsi}%`);
+    }
+    if (filters.kota) {
+      conditions.push(`kota ILIKE $${placeholderIndex++}`);
+      values.push(`%${filters.kota}%`);
+    }
+    if (filters.tipe_instansi) {
+      conditions.push(`tipe_instansi = $${placeholderIndex++}`);
+      values.push(filters.tipe_instansi);
+    }
+    if (filters.jenis_layanan) {
+      conditions.push(`jenis_layanan = $${placeholderIndex++}`);
+      values.push(filters.jenis_layanan);
+    }
+    if (filters.status) {
+      conditions.push(`status = $${placeholderIndex++}`);
+      values.push(filters.status);
+    }
+    if (filters.verified !== undefined) {
+      conditions.push(`verified = $${placeholderIndex++}`);
+      values.push(filters.verified);
+    }
+
+    let queryText = queryBase;
+    if (conditions.length > 0) {
+      queryText += " AND " + conditions.join(" AND ");
+    }
+    queryText += " ORDER BY created_at DESC";
+
     try {
-      let query = "SELECT * FROM ambulans WHERE active = true";
-      const values = [];
-
-      if (filters.provinsi) {
-        query += " AND provinsi = ?";
-        values.push(filters.provinsi);
-      }
-
-      if (filters.kota) {
-        query += " AND kota = ?";
-        values.push(filters.kota);
-      }
-
-      if (filters.tipe_instansi) {
-        query += " AND tipe_instansi = ?";
-        values.push(filters.tipe_instansi);
-      }
-
-      if (filters.jenis_layanan) {
-        query += " AND jenis_layanan = ?";
-        values.push(filters.jenis_layanan);
-      }
-
-      if (filters.status) {
-        query += " AND status = ?";
-        values.push(filters.status);
-      }
-
-      if (filters.verified !== undefined) {
-        query += " AND verified = ?";
-        values.push(filters.verified);
-      }
-
-      const [rows] = await db.query(query, values);
-      return rows;
+      const result = await db.query(queryText, values);
+      return result.rows;
     } catch (error) {
-      console.error("Error in search:", error);
+      console.error("Error in Ambulans.search:", error);
       throw error;
     }
   }
