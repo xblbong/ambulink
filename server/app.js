@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({path:"../.env"});
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
@@ -22,16 +22,8 @@ app.use(session({
   cookie: { secure: false }
 }));
 
-// Database connection configuration
-const dbConfig = {
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'gis_ambulans'
-};
-
 // Create database pool
-const pool = mysql.createPool(dbConfig);
+const pool = require('./config/db');
 
 // Test database connection
 pool.getConnection()
@@ -46,9 +38,11 @@ pool.getConnection()
 // Routes
 const ambulansRouter = require('./routes/ambulans');
 const authRouter = require('./routes/auth');
+const reviewRouter = require('./routes/reviewRoutes');
 
 app.use('/api/ambulans', ambulansRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/review', reviewRouter);
 
 // Serve static files
 app.get('/', (req, res) => {

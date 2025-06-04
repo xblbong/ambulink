@@ -1,19 +1,20 @@
-const Ambulans = require('../models/Ambulans');
-const { validationResult } = require('express-validator');
+const { v4: uuidv4 } = require("uuid");
+const Ambulans = require("../models/Ambulans");
+const { validationResult } = require("express-validator");
+
+const generateUniqueIntId = () => {
+  return Math.floor(Math.random() * 1000000000);
+};
 
 const ambulansController = {
   getAllAmbulans: async (req, res) => {
     try {
       const ambulans = await Ambulans.getAll();
-      console.log('Retrieved ambulans data:', ambulans); // Debug log
       res.json(ambulans);
     } catch (error) {
-      console.error('Error getting ambulans:', error);
-      // Send more detailed error message
-      res.status(500).json({ 
-        message: 'Terjadi kesalahan saat mengambil data ambulans',
+      res.status(500).json({
+        message: "Terjadi kesalahan saat mengambil data ambulans",
         error: error.message,
-        code: error.code
       });
     }
   },
@@ -22,14 +23,13 @@ const ambulansController = {
     try {
       const ambulans = await Ambulans.getById(req.params.id);
       if (!ambulans) {
-        return res.status(404).json({ message: 'Ambulans tidak ditemukan' });
+        return res.status(404).json({ message: "Ambulans tidak ditemukan" });
       }
       res.json(ambulans);
     } catch (error) {
-      console.error('Error getting ambulans by id:', error);
-      res.status(500).json({ 
-        message: 'Terjadi kesalahan saat mengambil data ambulans',
-        error: error.message
+      res.status(500).json({
+        message: "Terjadi kesalahan saat mengambil data ambulans",
+        error: error.message,
       });
     }
   },
@@ -38,30 +38,26 @@ const ambulansController = {
     try {
       const { lat, lng, radius = 5 } = req.query;
       if (!lat || !lng) {
-        return res.status(400).json({ message: 'Latitude dan longitude diperlukan' });
+        return res.status(400).json({ message: "Latitude dan longitude diperlukan" });
       }
       const ambulans = await Ambulans.getNearby(parseFloat(lat), parseFloat(lng), parseFloat(radius));
       res.json(ambulans);
     } catch (error) {
-      console.error('Error getting nearby ambulans:', error);
-      res.status(500).json({ 
-        message: 'Terjadi kesalahan saat mencari ambulans terdekat',
-        error: error.message
+      res.status(500).json({
+        message: "Terjadi kesalahan saat mencari ambulans terdekat",
+        error: error.message,
       });
     }
   },
 
   searchAmbulans: async (req, res) => {
     try {
-      console.log('Search query:', req.query); // Debug log
       const ambulans = await Ambulans.search(req.query);
-      console.log('Search results:', ambulans); // Debug log
       res.json(ambulans);
     } catch (error) {
-      console.error('Error searching ambulans:', error);
-      res.status(500).json({ 
-        message: 'Terjadi kesalahan saat mencari ambulans',
-        error: error.message
+      res.status(500).json({
+        message: "Terjadi kesalahan saat mencari ambulans",
+        error: error.message,
       });
     }
   },
@@ -73,18 +69,29 @@ const ambulansController = {
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const ambulansId = await Ambulans.create({
+      let ambulansID = generateUniqueIntId();
+      while (await Ambulans.getById(ambulansID)) {
+        ambulansID = generateUniqueIntId();
+      }
+
+      const ambulansData = {
         ...req.body,
-        user_id: req.user?.id // dari JWT payload, optional chaining untuk menghindari error
-      });
+        id: ambulansID,
+        user_id: req.user?.id,
+        jumlah_rating: 0,
+      };
+
+      const ambulansId = await Ambulans.create(ambulansData);
 
       res.status(201).json({
-        message: 'Ambulans berhasil ditambahkan',
-        ambulansId
+        message: "Ambulans berhasil ditambahkan",
+        ambulansId,
       });
     } catch (error) {
-      console.error('Error creating ambulans:', error);
-      res.status(500).json({ message: 'Terjadi kesalahan saat menambahkan ambulans' });
+      res.status(500).json({
+        message: "Terjadi kesalahan saat menambahkan ambulans",
+        error: error.message,
+      });
     }
   },
 
@@ -97,13 +104,15 @@ const ambulansController = {
 
       const updated = await Ambulans.update(req.params.id, req.body);
       if (!updated) {
-        return res.status(404).json({ message: 'Ambulans tidak ditemukan' });
+        return res.status(404).json({ message: "Ambulans tidak ditemukan" });
       }
 
-      res.json({ message: 'Ambulans berhasil diperbarui' });
+      res.json({ message: "Ambulans berhasil diperbarui" });
     } catch (error) {
-      // console.error('Error updating ambulans:', error);
-      res.status(500).json({ message: 'Terjadi kesalahan saat memperbarui ambulans' });
+      res.status(500).json({
+        message: "Terjadi kesalahan saat memperbarui ambulans",
+        error: error.message,
+      });
     }
   },
 
@@ -111,13 +120,15 @@ const ambulansController = {
     try {
       const deleted = await Ambulans.delete(req.params.id);
       if (!deleted) {
-        return res.status(404).json({ message: 'Ambulans tidak ditemukan' });
+        return res.status(404).json({ message: "Ambulans tidak ditemukan" });
       }
 
-      res.json({ message: 'Ambulans berhasil dihapus' });
+      res.json({ message: "Ambulans berhasil dihapus" });
     } catch (error) {
-      console.error('Error deleting ambulans:', error);
-      res.status(500).json({ message: 'Terjadi kesalahan saat menghapus ambulans' });
+      res.status(500).json({
+        message: "Terjadi kesalahan saat menghapus ambulans",
+        error: error.message,
+      });
     }
   },
 
@@ -125,15 +136,17 @@ const ambulansController = {
     try {
       const verified = await Ambulans.verify(req.params.id);
       if (!verified) {
-        return res.status(404).json({ message: 'Ambulans tidak ditemukan' });
+        return res.status(404).json({ message: "Ambulans tidak ditemukan" });
       }
 
-      res.json({ message: 'Ambulans berhasil diverifikasi' });
+      res.json({ message: "Ambulans berhasil diverifikasi" });
     } catch (error) {
-      console.error('Error verifying ambulans:', error);
-      res.status(500).json({ message: 'Terjadi kesalahan saat memverifikasi ambulans' });
+      res.status(500).json({
+        message: "Terjadi kesalahan saat memverifikasi ambulans",
+        error: error.message,
+      });
     }
-  }
+  },
 };
 
-module.exports = ambulansController; 
+module.exports = ambulansController;

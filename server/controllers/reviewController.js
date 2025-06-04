@@ -2,11 +2,14 @@ const Review = require('../models/reviewModel');
 
 exports.getReviewsByAmbulans = async (req, res) => {
   try {
-    const [reviews] = await Review.findByAmbulansId(req.params.ambulans_id);
+    const reviews = await Review.findByAmbulansId(req.params.ambulans_id);
+    if (!reviews || reviews.length === 0) {
+      return res.status(404).json({ message: 'No reviews found' });
+    }
     res.json(reviews);
   } catch (err) {
-    console.error('Gagal ambil review:', err);
-    res.status(500).json({ message: 'Gagal ambil data review' });
+    console.error('Error fetching reviews:', err);
+    res.status(500).json({ message: 'Error fetching reviews' });
   }
 };
 

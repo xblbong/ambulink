@@ -14,17 +14,17 @@ class User {
 
     static async create(userData) {
         try {
-            const { nama, email, password } = userData;
-            
+            const { id, nama, email, password, role, created_at, updated_at } = userData;
+
             // Hash password
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
-            
+
             const [result] = await db.query(
-                'INSERT INTO users (nama, email, password) VALUES (?, ?, ?)',
-                [nama, email, hashedPassword]
+                'INSERT INTO users (id, nama, email, password, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                [id, nama, email, hashedPassword, role, created_at, updated_at]
             );
-            
+
             return result.insertId;
         } catch (error) {
             console.error('Error in create:', error);
