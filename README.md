@@ -20,6 +20,9 @@ https://drive.google.com/file/d/1r-EuijJtSheg8gYk0JyjxLICc0q7SKxn/view?usp=drive
 ## Dokumentasi Teknis
 https://drive.google.com/file/d/1r5oMY0EojPi_Xf_qbppoqS-xUahKgXAk/view?usp=drive_link
 
+## Berkas
+https://drive.google.com/drive/folders/1ozi4QrAfe8szfZS31xR9w9TPBR2lwur2?usp=drive_link
+
 ## Url Deploy
 https://ambulink.vercel.app/
 
@@ -33,7 +36,6 @@ https://ambulink.vercel.app/
 - live chat
 
 ## Teknologi yang Digunakan
-
 - Frontend:
   - HTML, tailwind css, JavaScript
 
